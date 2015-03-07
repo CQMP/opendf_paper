@@ -126,8 +126,7 @@
 \address[a]{Department of Physics, University of Michigan, Ann Arbor, Michigan 48109, USA}
 
 \begin{abstract}
-%% Text of abstract
-Click here and insert your abstract text.
+We present the new open-source algorithm, \textbf{opendf} code -  a multiscale approach, that utilizes recently developed dual fermion method, to solve lattice problems of interacting strongly correlated systems. In particular, the present distribution of the code provides an approximate solution for the ubiquitous Hubbard model in various dimensions $d=1,2,3,4$. The method is designed to be the ending step of the self-consistency procedure of dynamical mean field theory (DMFT) and hence utilizes the DMFT input: Green's function and full reducible vertex functions. As an output the code provides spatially dependent susceptibilities and Green's functions of the model. The package is distributed as an open-source package. 
 \end{abstract}
 
 \begin{keyword}
@@ -156,10 +155,32 @@ Type your keywords here, separated by semicolons ;
 
 %\enlargethispage{-7mm}
 \vspace*{-8pt}
-\section{Main Text}
-\label{main}
-
+\section{Introduction}
+The task of a reliable description of interacting many-body quantum systems is of a paradigmatic importance. 
+Correlations between multiple particles is a driving force behind many of ubiquitous phenomena in modern condensed matter science, including high-temperature superconductivity ... 
+\section{Solved equations}
 text text text
+\section{Implementation and examples}
+
+\begin{figure}[ht]
+\includegraphics[width=0.5\columnwidth]{time_bfreqs.pdf}
+\caption{Bosonic scaling}
+\end{figure}
+
+\begin{figure}[ht]
+\includegraphics[width=0.5\columnwidth]{time_ffreqs.pdf}
+\caption{Fermionic scaling}
+\end{figure}
+
+\begin{figure}[ht]
+\includegraphics[width=0.5\columnwidth]{time_kpts.pdf}
+\caption{Volume scaling}
+\end{figure}
+
+
+\section{Conclusion}
+text text text
+
 
 \section*{Acknowledgements}
 Acknowledgements 
