@@ -164,7 +164,6 @@ Introduction
 text
 \section{Equations}
 \subsection{Prerequisites}
-%The dual fermion method embeds non-local correlations absent in the dynamical mean-field theory using a diagrammatic resummation. 
 Consider a lattice fermionic model 
 \begin{equation}
 H = \sum_{k\sigma} (\varepsilon_k - \mu) c^\dagger_{k\sigma} c_{k\sigma} + \sum_i H^{\mathrm{int}} [c^\dagger_i, c_i],
@@ -178,7 +177,7 @@ It provides an estimate for the local Green's function of the lattice problem as
 \begin{equation}
 S^{\mathrm{A}} = \sum_{i\omega,\sigma} (i\omega + \mu - \Delta_{\omega\sigma}) c^*_{\omega\sigma} c_{\omega\sigma} + S^{\mathrm{int}},
 \end{equation}
-where $S^{int} = \int_0^\beta d\tau H^{\mathrm{int}} [c^\dagger_i(\tau), c_i(\tau)] $ is the interaction part of the action. 
+where $S^{int} = -\int_0^\beta d\tau H^{\mathrm{int}} [c^\dagger_i(\tau), c_i(\tau)] $ is the interaction part of the action. 
 Hybridization function $\Delta_{\omega\sigma}$ can be obtained in a standard way [DMFT Review], present implementation of the code does not require a particular choice of frequency dependence of $\Delta$. 
 The correlators of the Anderson impurity model: one particle Green's function $g_{\omega\sigma} = -\langle c_{\omega\sigma} c^*_{\omega\sigma} \rangle$ and the two particle full vertex function (connected parts of two-particle Green's functions)  
 \begin{equation}
@@ -196,13 +195,11 @@ Presented version of the code considers spin-symmetric solutions of the lattice 
 \end{itemize}
 
 \subsection{Ladder dual fermion self-consistency loop}
-The evaluation of the DF equations consists of iterative solution to the fully dressed dual fermion Green's function $\tilde G$. It starts with the construction of the bare dual fermion propagator
+The evaluation of the DF equations consists of iterative updates of the fully dressed dual fermion Green's function $\tilde G$, until convergence is achieved. It starts with the construction of the bare dual fermion propagator
 \begin{equation}
 \tilde G^{(0)}_{\omega,k} = \left[g_{\omega}^{-1} + \Delta_\omega - \varepsilon_k\right]^{-1} - g_{\omega}, \label{eq:gd0}
 \end{equation}
-which represents a $k$-dependent correction to the impurity Green's function.
-
-This Green's function is used to construct bubbles: 
+which represents a $k$-dependent correction to the impurity Green's function. This Green's function is used to construct bubbles: 
 \begin{equation}\label{eq:dual_bubble}
 \tilde \chi_{\Omega\omega}(q) = -T \int_{BZ} dk \tilde G_{\omega, k} \tilde G_{\omega + \Omega, k+q}.
 \end{equation}
@@ -215,17 +212,53 @@ The vertices for the respected channels from Eq. \ref{eq:spin_symm} and the bubb
 \Gamma^{d/m}_{\Omega,\omega,\omega'}(q) = \gamma^{d/m}_{\Omega,\omega,\omega'} + \sum_{\omega''} \gamma^{d/m}_{\Omega,\omega,\omega''} \tilde\chi_{\Omega,\omega''}(q) \Gamma^{d/m}_{\Omega'',\omega'}(q).
 \end{equation}
 
-Evaluation of Eq. \ref{eq:dual_ladder} is obtained independently for each pair of vertex bosonic frequency $\Omega$ and transferred momentum $q$. 
-In this case $\gamma_{\Omega,\omega,\omega'}$ and $\Gamma_{\Omega,\omega,\omega'}(q)$ are matrices in the space of fermionic Matsubara frequencies $\omega$, $\omega'$, and $\tilde\chi_{\Omega,\omega''}(q)$ is a diagonal matrix. 
-In the matrix notation for each $\Omega$ and $q$ this equation reads \begin{equation}\label{lin_alg_inv}
-(\hat 1 - \hat \gamma \tilde \chi)\hat \Gamma  = \hat \gamma\end{equation} and is a standard linear algebra equation.
+Evaluation of Eq. \ref{eq:dual_ladder} is performed independently for each pair of vertex bosonic frequency $\Omega$ and transferred momentum $q$. 
+$\gamma_{\Omega,\omega,\omega'}$ and $\Gamma_{\Omega,\omega,\omega'}(q)$ are represented as matrices in the space of fermionic Matsubara frequencies $\omega$, $\omega'$, and $\tilde\chi_{\Omega,\omega''}(q)$ is a diagonal matrix. 
+In the matrix notation for each $\Omega$ and $q$ this equation reads 
+\begin{equation}\label{eq:lin_alg_inv}
+(\hat 1 - \hat \gamma \tilde \chi)\hat \Gamma  = \hat \gamma
+\end{equation} 
+and is a standard linear algebra equation.
 This equation is physically correct only when the maximum eigenvalue of $\hat \gamma \tilde \chi$ is smaller than one, i.e. all eigenvalues of the matrix $\hat D = \hat 1 - \hat \gamma \tilde \chi$ are positive. 
 To determine it, an LU-decomposition of the matrix $\hat D$ is performed, and a determinant $D(\Omega, q)$ is calculated.
-If $D(\Omega, q) > 0$, then $\Gamma$ is obtained at a constant computational complexity.
+If $D(\Omega, q) > 0$, then Eq. \ref{eq:lin_alg_inv} is solved and $\Gamma$ is obtained at a constant computational complexity.
 When $D(\Omega, q) \leq 0$, the DF solution is outside of the convergence radius of the ladder approximation.
 Given that the resulting solution is unique, one can extend this convergence radius by doing a low-order iterative evaluation of $\Gamma$ and checking if the invertion of Eq. \ref{eq:dual_ladder} can be obtained on the next DF iteration. 
+ 
+Once the fully dressed vertex function $\Gamma_{\Omega,\omega,\omega'}$ is obtained, it is used in the Schwinger-Dyson equation to obtain the fermionic self-energy $\tilde \Sigma_{\omega, k}$. 
+The equation reads:
+\begin{equation}
+\tilde \Sigma_{\omega, k} = \frac{T}{2}  \sum_{\Omega, q} \left( 3 \left[\Gamma^m_{\Omega,\omega,\omega}(q) - \frac{1}{2}\Gamma^{(2), m}_{\Omega,\omega,\omega}(q) \right] + \Gamma^d_{\Omega,\omega,\omega}(q) - \frac{1}{2}\Gamma^{(2), d}_{\Omega,\omega,\omega}(q)  \right) \tilde G_{\omega, k + q},
+\end{equation}
+where $\Gamma^{(2)} = \hat \gamma \tilde \chi \hat \gamma $ indicates the second order (first iteration) correction from Eq. \ref{eq:dual_ladder} to avoid diagrammatic overcounting. 
 
-\andrey{TBD : SD equation}
+The resulting self-energy is used to feed back the dual Green's function through the Dyson's equation:
+\begin{equation}\label{eq:dyson}
+\tilde G^{-1}_{\omega k} = \left[G^{(0}_{\omega k}\right]^{-1} - \tilde \Sigma_{\omega k}
+\end{equation}
+
+The procedure is repeated, until convergence of $\tilde G$ is achieved. 
+
+\subsection{Resulting observables}
+Once the fully converged dual Green's function $\tilde G$, and consequently, self-energy $\tilde \Sigma$, vertices $\Gamma^{d/m}$ are obtained, they can be used in determining the lattice correlators. Specifically, 
+\begin{itemize}
+\item Lattice self-energy: 
+\begin{equation}\label{eq:sigma_lat}
+\Sigma_{\omega, k} = \frac{\tilde \Sigma_{\omega, k}}{1 - g_\omega \Sigma_{\omega, k}} + \Sigma^{DMFT}_{\omega},
+\end{equation}
+where $\Sigma^{DMFT}_{\omega} = i\omega + \mu - \Delta_{\omega} - g_\omega^{-1}$. 
+\item Lattice Green's function
+\begin{equation}\label{eq:glat}
+G_{\omega,k} = \left[\Delta_{\omega} - \varepsilon_{k}\right]^{-1} + \left[\Delta_{\omega} - \varepsilon_{k}\right]^{-1} g_{\omega}^{-1} \tilde G_{\omega, k} g_{\omega}^{-1} \left[\Delta_{\omega} - \varepsilon_{k}\right]^{-1}.
+\end{equation}
+Eqs. \ref{eq:sigma_lat} and \ref{eq:glat} are related through a Dyson's equation for $G$ and $\Sigma$. 
+\item Charge/Spin susceptibility 
+\begin{align}
+\chi^{\mathrm{ch/sp}} (\Omega, q) & = -T \sum_{\omega k} G_{\omega k} G_{\omega+\Omega k+q} + \sum_{\omega,\omega'} L_{\Omega, \omega}(q) \Gamma^{d/m}_{\Omega,\omega,\omega'}(q) L_{\Omega, \omega'}(q), \\
+L_{\Omega, \omega}(q) & = -T \sum_k \mathfrak{G}_{\omega,k} \mathfrak{G}_{\omega + \Omega,k + q} \\
+\mathfrak{G}_{\omega,k} & = \tilde G_{\omega k} \frac{\tilde G^{(0)}_{\omega, k} + g_\omega}{\tilde G^{(0)}_{\omega, k}}
+\end{align}
+\end{itemize}
 
 \section{Implementation and examples}
 
