@@ -8,6 +8,9 @@
 \usepackage[colorlinks=true]{hyperref}%url}
 \usepackage{amsmath}
 
+\newcommand{\andrey}[1]{\textcolor{blue}{#1}}
+\newcommand{\emanuel}[1]{\textbf{\color{CarnationPink}#1}}
+
 
 %% The ecrc package defines commands needed for running heads and logos.
 %% For running heads, you can set the journal name, the volume, the starting page and the authors
@@ -126,7 +129,7 @@
 \address[a]{Department of Physics, University of Michigan, Ann Arbor, Michigan 48109, USA}
 
 \begin{abstract}
-We present the new open-source algorithm, \textbf{opendf} code -  a multiscale approach, that utilizes recently developed dual fermion method, to solve lattice problems of interacting strongly correlated systems. In particular, the present distribution of the code provides an approximate solution for the ubiquitous Hubbard model in various dimensions $d=1,2,3,4$. The method is designed to be the ending step of the self-consistency procedure of dynamical mean field theory (DMFT) and hence utilizes the DMFT input: Green's function and full reducible vertex functions. As an output the code provides spatially dependent susceptibilities and Green's functions of the model. The package is distributed as an open-source package. 
+We present the open-source algorithm, \textbf{opendf} code -  a multiscale approach, that utilizes recently developed dual fermion method, to solve lattice problems of interacting strongly correlated systems. In particular, present distribution of the code provides an approximate solution for the Hubbard model in various dimensions $d=1,2,3,4$. The method is designed to be the ending step of the self-consistency procedure of dynamical mean field theory (DMFT) and hence utilizes the DMFT input: Green's function and full reducible vertex functions. As an output the code provides an estimate to spatially dependent susceptibilities and Green's functions of the model. The code is distributed as an open-source package. 
 \end{abstract}
 
 \begin{keyword}
@@ -156,10 +159,74 @@ Type your keywords here, separated by semicolons ;
 %\enlargethispage{-7mm}
 \vspace*{-8pt}
 \section{Introduction}
-The task of a reliable description of interacting many-body quantum systems is of a paradigmatic importance. 
-Correlations between multiple particles is a driving force behind many of ubiquitous phenomena in modern condensed matter science, including high-temperature superconductivity ... 
-\section{Solved equations}
-text text text
+Introduction 
+\vspace{5em}
+text
+\section{Equations}
+\subsection{Prerequisites}
+%The dual fermion method embeds non-local correlations absent in the dynamical mean-field theory using a diagrammatic resummation. 
+Consider a lattice fermionic model 
+\begin{equation}
+H = \sum_{k\sigma} (\varepsilon_k - \mu) c^\dagger_{k\sigma} c_{k\sigma} + \sum_i H^{\mathrm{int}} [c^\dagger_i, c_i],
+\end{equation}
+where index $\sigma$ labels the spin projection, $\varepsilon_k$ is the lattice dispersion relation and $k$ is the vector in the reciprocal space. 
+$H^{\mathrm{int}}$ labels the local interaction on every site of the lattice and index $i$ labels every site on the lattice. 
+The choice $H^{\mathrm{int}} = U c^\dagger_\uparrow c_\uparrow c^\dagger_\downarrow c_\downarrow$ is the Hubbard model [Hubbard1963]. 
+
+At the first step, performed outside of this code \footnote{Present code can be used as a part of the self-consistent DMFT loop, but requires an external ``impurity solver''.}, an approximate solution of the model is obtained by means of the dynamical mean field theory[]. 
+It provides an estimate for the local Green's function of the lattice problem as a  solution of the Anderson impurity model, embedded into a self-consistently determined hybridization. The imaginary time action of this ``impurity problem''  reads in terms of Grassmann variables $c$, $c^*$ as 
+\begin{equation}
+S^{\mathrm{A}} = \sum_{i\omega,\sigma} (i\omega + \mu - \Delta_{\omega\sigma}) c^*_{\omega\sigma} c_{\omega\sigma} + S^{\mathrm{int}},
+\end{equation}
+where $S^{int} = \int_0^\beta d\tau H^{\mathrm{int}} [c^\dagger_i(\tau), c_i(\tau)] $ is the interaction part of the action. 
+Hybridization function $\Delta_{\omega\sigma}$ can be obtained in a standard way [DMFT Review], present implementation of the code does not require a particular choice of frequency dependence of $\Delta$. 
+The correlators of the Anderson impurity model: one particle Green's function $g_{\omega\sigma} = -\langle c_{\omega\sigma} c^*_{\omega\sigma} \rangle$ and the two particle full vertex function (connected parts of two-particle Green's functions)  
+\begin{equation}
+\gamma_{\Omega\omega\omega'}^{\sigma_1\sigma_2\sigma_3\sigma_4} = \left(\langle c_{\omega,\sigma_1} c^*_{\Omega + \omega,\sigma_2} c_{\omega' + \Omega, \sigma_3} c^*_{\omega', \sigma_4}\rangle - g_{\omega\sigma_1}g_{\omega'\sigma_3}\delta_{\Omega,0}\delta_{\sigma_1,\sigma_2} + g_{\omega\sigma_1} g_{\omega + \Omega, \sigma_2} \delta_{\omega,\omega'}\delta_{\sigma, \sigma_3} \right)
+\end{equation}
+are the input to DF calculations. 
+
+Presented version of the code considers spin-symmetric solutions of the lattice $s=1/2$ fermionic problems, and does not describe symmetry-broken phases. We will omit index $\sigma$ from now on, unless it is specifically required. The complete set of input quantities reads
+\begin{itemize}
+\item $g_\omega$ - the full Green's function of the DMFT impurity problem (same values for both spin components)
+\item $\Delta_{\omega}$ - hybridization function of the DMFT impurity problem
+\item $\mu$ - chemical potential of the problem
+\item Two independent components of the impurity vertex function: $\gamma^{\uparrow\uparrow}_{\Omega,\omega,\omega'} = \gamma_{\Omega,\omega,\omega'}^{\uparrow\uparrow\uparrow\uparrow}$ and $\gamma^{\uparrow\downarrow}_{\Omega,\omega,\omega'} = \gamma_{\Omega,\omega,\omega'}^{\uparrow\downarrow\downarrow\uparrow}$
+\item Lattice dispersion $\varepsilon_{k}$ and the dimensionality $d$ are compiled into the specific running executable. The hypercubic lattice dispersion $-2t \sum_{i=1}^d \cos k_i$ at dimensions $d=1,2,3,4$ is provided with the code. Other lattice choices can be achieved by extending the code. 
+\end{itemize}
+
+\subsection{Ladder dual fermion self-consistency loop}
+The evaluation of the DF equations consists of iterative solution to the fully dressed dual fermion Green's function $\tilde G$. It starts with the construction of the bare dual fermion propagator
+\begin{equation}
+\tilde G^{(0)}_{\omega,k} = \left[g_{\omega}^{-1} + \Delta_\omega - \varepsilon_k\right]^{-1} - g_{\omega}, \label{eq:gd0}
+\end{equation}
+which represents a $k$-dependent correction to the impurity Green's function.
+
+This Green's function is used to construct bubbles: 
+\begin{equation}\label{eq:dual_bubble}
+\tilde \chi_{\Omega\omega}(q) = -T \int_{BZ} dk \tilde G_{\omega, k} \tilde G_{\omega + \Omega, k+q}.
+\end{equation}
+The impurity vertex functions are combined into density and magnetic channels (labeled d/m respectively) as: 
+\begin{equation}\label{eq:spin_symm}
+\gamma^{d/m}_{\Omega,\omega,\omega'} = \gamma^{\uparrow\uparrow}_{\Omega,\omega,\omega'} \pm \gamma^{\uparrow\downarrow}_{\Omega,\omega,\omega'}
+\end{equation}
+The vertices for the respected channels from Eq. \ref{eq:spin_symm} and the bubbles from Eq. \ref{eq:dual_bubble} are substituted into ladder equations:
+\begin{equation}\label{eq:dual_ladder}
+\Gamma^{d/m}_{\Omega,\omega,\omega'}(q) = \gamma^{d/m}_{\Omega,\omega,\omega'} + \sum_{\omega''} \gamma^{d/m}_{\Omega,\omega,\omega''} \tilde\chi_{\Omega,\omega''}(q) \Gamma^{d/m}_{\Omega'',\omega'}(q).
+\end{equation}
+
+Evaluation of Eq. \ref{eq:dual_ladder} is obtained independently for each pair of vertex bosonic frequency $\Omega$ and transferred momentum $q$. 
+In this case $\gamma_{\Omega,\omega,\omega'}$ and $\Gamma_{\Omega,\omega,\omega'}(q)$ are matrices in the space of fermionic Matsubara frequencies $\omega$, $\omega'$, and $\tilde\chi_{\Omega,\omega''}(q)$ is a diagonal matrix. 
+In the matrix notation for each $\Omega$ and $q$ this equation reads \begin{equation}\label{lin_alg_inv}
+(\hat 1 - \hat \gamma \tilde \chi)\hat \Gamma  = \hat \gamma\end{equation} and is a standard linear algebra equation.
+This equation is physically correct only when the maximum eigenvalue of $\hat \gamma \tilde \chi$ is smaller than one, i.e. all eigenvalues of the matrix $\hat D = \hat 1 - \hat \gamma \tilde \chi$ are positive. 
+To determine it, an LU-decomposition of the matrix $\hat D$ is performed, and a determinant $D(\Omega, q)$ is calculated.
+If $D(\Omega, q) > 0$, then $\Gamma$ is obtained at a constant computational complexity.
+When $D(\Omega, q) \leq 0$, the DF solution is outside of the convergence radius of the ladder approximation.
+Given that the resulting solution is unique, one can extend this convergence radius by doing a low-order iterative evaluation of $\Gamma$ and checking if the invertion of Eq. \ref{eq:dual_ladder} can be obtained on the next DF iteration. 
+
+\andrey{TBD : SD equation}
+
 \section{Implementation and examples}
 
 \begin{figure}[ht]
