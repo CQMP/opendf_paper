@@ -27,3 +27,6 @@
 main.pdf
 mainNotes.bib
 main.spl
+*.make
+main.d
+main.fls
