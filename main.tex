@@ -129,7 +129,7 @@
 \address[a]{Department of Physics, University of Michigan, Ann Arbor, Michigan 48109, USA}
 
 \begin{abstract}
-We present the open-source algorithm, \textbf{opendf} code -  a multiscale approach, that utilizes recently developed dual fermion method, to solve lattice problems of interacting strongly correlated systems. In particular, present distribution of the code provides an approximate solution for the Hubbard model in various dimensions $d=1,2,3,4$. The method is designed to be the ending step of the self-consistency procedure of dynamical mean field theory (DMFT) and hence utilizes the DMFT input: Green's function and full reducible vertex functions. As an output the code provides an estimate to spatially dependent susceptibilities and Green's functions of the model. The code is distributed as an open-source package. 
+We present the open-source algorithm, \textbf{opendf} code -  a multiscale approach, that utilizes recently developed dual fermion method, to solve lattice problems of interacting strongly correlated systems. In particular, present distribution of the code provides an approximate solution for the Hubbard model in various dimensions $D=1,2,3,4$. The method is designed to be the ending step of the self-consistency procedure of dynamical mean field theory (DMFT) and hence utilizes the DMFT input: Green's function and full reducible vertex functions. As an output the code provides an estimate to spatially dependent susceptibilities and Green's functions of the model. The code is distributed as an open-source package. 
 \end{abstract}
 
 \begin{keyword}
@@ -164,7 +164,7 @@ Introduction
 text
 \section{Equations}
 \subsection{Prerequisites}
-Consider a lattice fermionic model 
+Consider a lattice fermionic model in $D$ dimensions
 \begin{equation}
 H = \sum_{k\sigma} (\varepsilon_k - \mu) c^\dagger_{k\sigma} c_{k\sigma} + \sum_i H^{\mathrm{int}} [c^\dagger_i, c_i],
 \end{equation}
@@ -191,7 +191,7 @@ Presented version of the code considers spin-symmetric solutions of the lattice 
 \item $\Delta_{\omega}$ - hybridization function of the DMFT impurity problem
 \item $\mu$ - chemical potential of the problem
 \item Two independent components of the impurity vertex function: $\gamma^{\uparrow\uparrow}_{\Omega,\omega,\omega'} = \gamma_{\Omega,\omega,\omega'}^{\uparrow\uparrow\uparrow\uparrow}$ and $\gamma^{\uparrow\downarrow}_{\Omega,\omega,\omega'} = \gamma_{\Omega,\omega,\omega'}^{\uparrow\downarrow\downarrow\uparrow}$
-\item Lattice dispersion $\varepsilon_{k}$ and the dimensionality $d$ are compiled into the specific running executable. The hypercubic lattice dispersion $-2t \sum_{i=1}^d \cos k_i$ at dimensions $d=1,2,3,4$ is provided with the code. Other lattice choices can be achieved by extending the code. 
+\item Lattice dispersion $\varepsilon_{k}$ and the dimensionality $D$ are compiled into the specific running executable. The hypercubic lattice dispersion $-2t \sum_{i=1}^d \cos k_i$ at dimensions $D=1,2,3,4$ is provided with the code. Other lattice choices can be achieved by extending the code. 
 \end{itemize}
 
 \subsection{Ladder dual fermion self-consistency loop}
@@ -201,9 +201,9 @@ The evaluation of the DF equations consists of iterative updates of the fully dr
 \end{equation}
 which represents a $k$-dependent correction to the impurity Green's function. This Green's function is used to construct bubbles: 
 \begin{equation}\label{eq:dual_bubble}
-\tilde \chi_{\Omega\omega}(q) = -T \int_{BZ} dk \tilde G_{\omega, k} \tilde G_{\omega + \Omega, k+q}.
+\tilde \chi_{\Omega\omega}(q) = -\frac{T}{N_k^d} \sum_k \tilde G_{\omega, k} \tilde G_{\omega + \Omega, k+q}.
 \end{equation}
-The impurity vertex functions are combined into density and magnetic channels (labeled d/m respectively) as: 
+Here the integral over the Brilloin zone is replaced with a discrete summation with $N_k$ points in each direction. The impurity vertex functions are combined into density and magnetic channels (labeled d/m respectively) as: 
 \begin{equation}\label{eq:spin_symm}
 \gamma^{d/m}_{\Omega,\omega,\omega'} = \gamma^{\uparrow\uparrow}_{\Omega,\omega,\omega'} \pm \gamma^{\uparrow\downarrow}_{\Omega,\omega,\omega'}
 \end{equation}
@@ -227,8 +227,8 @@ Given that the resulting solution is unique, one can extend this convergence rad
  
 Once the fully dressed vertex function $\Gamma_{\Omega,\omega,\omega'}$ is obtained, it is used in the Schwinger-Dyson equation to obtain the fermionic self-energy $\tilde \Sigma_{\omega, k}$. 
 The equation reads:
-\begin{equation}
-\tilde \Sigma_{\omega, k} = \frac{T}{2}  \sum_{\Omega, q} \left( 3 \left[\Gamma^m_{\Omega,\omega,\omega}(q) - \frac{1}{2}\Gamma^{(2), m}_{\Omega,\omega,\omega}(q) \right] + \Gamma^d_{\Omega,\omega,\omega}(q) - \frac{1}{2}\Gamma^{(2), d}_{\Omega,\omega,\omega}(q)  \right) \tilde G_{\omega, k + q},
+\begin{equation}\label{eq:sd}
+\tilde \Sigma_{\omega, k} = \frac{T}{2 N_k^d}  \sum_{\Omega, q} \left( 3 \left[\Gamma^m_{\Omega,\omega,\omega}(q) - \frac{1}{2}\Gamma^{(2), m}_{\Omega,\omega,\omega}(q) \right] + \Gamma^d_{\Omega,\omega,\omega}(q) - \frac{1}{2}\Gamma^{(2), d}_{\Omega,\omega,\omega}(q)  \right) \tilde G_{\omega, k + q},
 \end{equation}
 where $\Gamma^{(2)} = \hat \gamma \tilde \chi \hat \gamma $ indicates the second order (first iteration) correction from Eq. \ref{eq:dual_ladder} to avoid diagrammatic overcounting. 
 
@@ -260,15 +260,43 @@ L_{\Omega, \omega}(q) & = -T \sum_k \mathfrak{G}_{\omega,k} \mathfrak{G}_{\omega
 \end{align}
 \end{itemize}
 
-\section{Implementation and examples}
+\section{Distribution and Implementation}
+The code is distributed as a C++ library, with precompiled executables \texttt{hub\_df\_cubic{\bf D}d}, where \texttt{\bf D} labels the number of dimensions ($D=1,2,3,4$). We use the opensource \texttt{gftools} library\cite{gftools} for algebraic operations with single- and multi-particle Green's functions and it's interface to the \texttt{ALPSCore} for loading/saving \texttt{hdf5} objects. Calculation of bubbles of Green's functions is performed using FFT transformations. The loop through the Brilloin zone in Eq. \ref{eq:sd} is optimized by sampling only the irreducible wedge and reweighting contributions from different symmetry points.
+
+The library distribution allows for flexibility with the input data. In order to use provided \texttt{hub\_df\_cubic{\bf D}d} executables the input data should be stored in the \texttt{hdf5} file, under any chosen group name. It should contain the following objects, loadable by \texttt{gftools} routines. 
+\begin{itemize}
+\item \texttt{/gw0} and \texttt{/gw1}. Both should be the same and store $g_\omega$.
+\item \texttt{/delta0} and \texttt{/delta1}, storing $\Delta_\omega$.
+\item \texttt{/F00} and \texttt{/F01}. $\gamma^{\uparrow\uparrow}$ and $\gamma^{\uparrow\downarrow}$ respectively.
+\item Other parameters, like $\mu$ and hopping unit are provided through the provided command line interface.
+\end{itemize}
+The example input generator for the case of $U \gg t$ (the case of  ``atomic limit'') and particle-hole symmetric regime is provided with the code, in which 
+\begin{align}
+g_{\omega} & = \frac{1}{2}\left[\frac{1}{i\omega - U/2} + \frac{1}{i\omega + U/2}\right] \\
+\Delta_{\omega} & = 2Dg_{\omega} \\
+\gamma^{\uparrow\uparrow}_{\omega_1, \omega_2, \omega_3, \omega_4} & = \frac{\beta U^2}{4} (\delta_{\omega_1,\omega_2} - \delta_{\omega_1,\omega_4} ) \Lambda_{\omega_1}\Lambda_{\omega_3} \\
+\gamma^{\uparrow\downarrow}_{\omega_1, \omega_2, \omega_3, \omega_4} & = -U + 
+\frac{U^3}{8}\frac{\omega_1^2 + \omega_2^2 + \omega_3^2 + \omega_4^2}{\omega_1^2\omega_2^2\omega_3^2\omega_4^2} + \frac{3U^5}{16}\frac{1}{\omega_1\omega_2\omega_3\omega_4}  \\
+& \notag + \frac{\beta U^2}{4} \frac{1}{1 + \exp(\beta U /2 )} 
+(2\delta_{ \omega_2, -\omega_3} + \delta_{\omega_1, \omega_2}) 
+\Lambda_{\omega_2} \Lambda_{\omega_3}  \\ 
+& \notag - \frac{\beta U^2}{4} \frac{1}{1 + \exp(-\beta U /2 )} 
+(2\delta_{ \omega_1, \omega_4} + \delta_{\omega_1, \omega_2}) 
+\Lambda_{\omega_1} \Lambda_{\omega_3},
+\end{align}
+where $\Lambda_\omega = 1 + U^2/(4\omega^2)$ and fermionic notation $\omega_1 = \omega, \omega_2 = \omega + \Omega, \omega_3 = \omega' + \Omega, \omega_4 = \omega'$ are used to simplify the notation.
+
+The output of the code is stored in a generated or existing hdf5 file under the \texttt{/df} section.
+
+\section{Performance}
 
 \begin{figure}[ht]
-\includegraphics[width=0.5\columnwidth]{time_bfreqs.pdf}
-\caption{Bosonic scaling}
+\includegraphics[width=1.0\columnwidth]{time_bfreqs.pdf}
+\caption{(a) execution time; relative difference $|1 - \tilde G/\tilde G_{Nb\to \infty}|$ of the dual fermion Green's function $\tilde G_{i\omega, k}$ at $i\omega = i\pi / \beta, k = (0,0)$ for the Hubbard model in 2 dimensions at different number of bosonic frequencies. in a linear (b) and logarithmic (c) scales }
 \end{figure}
 
 \begin{figure}[ht]
-\includegraphics[width=0.5\columnwidth]{time_ffreqs.pdf}
+\includegraphics[width=1.0\columnwidth]{time_ffreqs.pdf}
 \caption{Fermionic scaling}
 \end{figure}
 
@@ -277,13 +305,20 @@ L_{\Omega, \omega}(q) & = -T \sum_k \mathfrak{G}_{\omega,k} \mathfrak{G}_{\omega
 \caption{Volume scaling}
 \end{figure}
 
+The speed and the precision of the code at the given set of physical parameters $U, \mu, \beta$ depends on several internal parameters. In particular, sampling of the vertex $\gamma_{\Omega,\omega,\omega'}$ can only be done for a finite 
+
+
+We analyze the performance of the code with a change of (1) number of bosonic frequencies, that sample vertex function $\gamma$ 
+
+\section{Examples}
+
 
 \section{Conclusion}
 text text text
 
 
 \section*{Acknowledgements}
-Acknowledgements 
+Authors are grateful to D. Hirschmeier for fruitful discussions and acknowedge ... for financial support.
 
 \end{document}
 
