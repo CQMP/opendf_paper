@@ -261,7 +261,7 @@ L_{\Omega, \omega}(q) & = -T \sum_k \mathfrak{G}_{\omega,k} \mathfrak{G}_{\omega
 \end{itemize}
 
 \section{Distribution and Implementation}
-The code is distributed as a C++ library, with precompiled executables \texttt{hub\_df\_cubic{\bf D}d}, where \texttt{\bf D} labels the number of dimensions ($D=1,2,3,4$). We use the opensource \texttt{gftools} library\cite{gftools} for algebraic operations with single- and multi-particle Green's functions and it's interface to the \texttt{ALPSCore} for loading/saving \texttt{hdf5} objects. Calculation of bubbles of Green's functions is performed using FFT transformations. The loop through the Brilloin zone in Eq. \ref{eq:sd} is optimized by sampling only the irreducible wedge and reweighting contributions from different symmetry points.
+The code is distributed as a C++ library, with precompiled executables \texttt{hub\_df\_cubic{\bf D}d}, where \texttt{\bf D} labels the number of dimensions ($D=1,2,3,4$). We use the opensource \texttt{gftools} library \cite{gftools} for algebraic operations with single- and multi-particle Green's functions and it's interface to the \texttt{ALPSCore} libraries \cite{ALPSCore} for loading/saving \texttt{hdf5} objects. Calculation of bubbles of Green's functions is performed using FFT transformations. The loop through the Brilloin zone in Eq. \ref{eq:sd} is optimized by sampling only the irreducible wedge and reweighting contributions from different symmetry points. The code is available on \url{https://github.com/aeantipov/opendf}.
 
 The library distribution allows for flexibility with the input data. In order to use provided \texttt{hub\_df\_cubic{\bf D}d} executables the input data should be stored in the \texttt{hdf5} file, under any chosen group name. It should contain the following objects, loadable by \texttt{gftools} routines. 
 \begin{itemize}
@@ -271,10 +271,11 @@ The library distribution allows for flexibility with the input data. In order to
 \item Other parameters, like $\mu$ and hopping unit are provided through the provided command line interface.
 \end{itemize}
 The example input generator for the case of $U \gg t$ (the case of  ``atomic limit'') and particle-hole symmetric regime is provided with the code, in which 
-\begin{align}
+\begin{align}\label{eq:atomic_limit1}
 g_{\omega} & = \frac{1}{2}\left[\frac{1}{i\omega - U/2} + \frac{1}{i\omega + U/2}\right] \\
-\Delta_{\omega} & = 2Dg_{\omega} \\
-\gamma^{\uparrow\uparrow}_{\omega_1, \omega_2, \omega_3, \omega_4} & = \frac{\beta U^2}{4} (\delta_{\omega_1,\omega_2} - \delta_{\omega_1,\omega_4} ) \Lambda_{\omega_1}\Lambda_{\omega_3} \\
+\Delta_{\omega} & = 2Dg_{\omega} \label{eq:atomic_limit2} \\ 
+\gamma^{\uparrow\uparrow}_{\omega_1, \omega_2, \omega_3, \omega_4} & = \frac{\beta U^2}{4} (\delta_{\omega_1,\omega_2} - \delta_{\omega_1,\omega_4} ) \Lambda_{\omega_1}\Lambda_{\omega_3} \label{eq:atomic_limit3} \\ 
+\label{eq:atomic_limit4}
 \gamma^{\uparrow\downarrow}_{\omega_1, \omega_2, \omega_3, \omega_4} & = -U + 
 \frac{U^3}{8}\frac{\omega_1^2 + \omega_2^2 + \omega_3^2 + \omega_4^2}{\omega_1^2\omega_2^2\omega_3^2\omega_4^2} + \frac{3U^5}{16}\frac{1}{\omega_1\omega_2\omega_3\omega_4}  \\
 & \notag + \frac{\beta U^2}{4} \frac{1}{1 + \exp(\beta U /2 )} 
@@ -290,25 +291,32 @@ The output of the code is stored in a generated or existing hdf5 file under the 
 
 \section{Performance}
 
+Numerical solution of dual fermion equations requires introducing several control parameters. In particular,
+the vertex function $\gamma_{\Omega,\omega,\omega'}$ is sampled on a grid with a cutoff $N_\Omega$ in bosonic and $N_{\omega}$ fermionic frequencies and the Brilloin zone is sampled on a finite grid of size $N_k$, providing the total volume of the system $N=N_k^d$. We analyze the convergence of the code upon tuning $N_{\Omega}$, $N_{\omega}$ and $N_k$ and the computational scaling below. Eqs. \ref{eq:atomic_limit1}, \ref{eq:atomic_limit2}, \ref{eq:atomic_limit3}, \ref{eq:atomic_limit4} are used to provide the input to the code and the system is evaluated in $2$ dimensions, at $U=8$, $\mu = \frac{U}{2}$. We choose the value of $g= \tilde G_{i\pi / \beta, 0, 0}$ to control the convergence. After making several runs, changing control parameter $N_x$, with $x = \{ \Omega, \omega, k \}$, we extrapolate the value to $N_x \to \infty$ and plot the normalized difference 
+$$\delta_{g} = \left|\frac{g_{N_x} - g_{N_x \to \infty}}{g_{N_x \to \infty}}\right|$$
+to evaluate the error. The maximum run-time of this benchmark data is $\approx 4$ min.
+
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_bfreqs.pdf}
 \caption{(a) execution time; relative difference $|1 - \tilde G/\tilde G_{Nb\to \infty}|$ of the dual fermion Green's function $\tilde G_{i\omega, k}$ at $i\omega = i\pi / \beta, k = (0,0)$ for the Hubbard model in 2 dimensions at different number of bosonic frequencies. in a linear (b) and logarithmic (c) scales }
+\label{fig:benchmark_b}
 \end{figure}
+
+Fig. \ref{fig:benchmark_b} shows the performance of the \texttt{opendf} code with respect to the total number of bosonic frequencies in the vertex $\gamma_{\Omega}$. The computational effort grows linearly in $N_{\Omega}$, while the error decreases quadratically, indicating that this error can be eliminated with large enough $N_{\Omega}$.
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_ffreqs.pdf}
 \caption{Fermionic scaling}
+\label{fig:benchmark_f}
 \end{figure}
+
+We analyze the performance of the code with respect to the change of the total number of fermionic frequencies on Fig. \ref{fig:benchmark_f}. While the computational scaling grows quadratically, it is seen that the convergence of $g$ is achived very quickly 
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_kpts.pdf}
 \caption{Volume scaling}
+\label{fig:benchmark_f}
 \end{figure}
-
-The speed and the precision of the code at the given set of physical parameters $U, \mu, \beta$ depends on several internal parameters. In particular, sampling of the vertex $\gamma_{\Omega,\omega,\omega'}$ can only be done for a finite 
-
-
-We analyze the performance of the code with a change of (1) number of bosonic frequencies, that sample vertex function $\gamma$ 
 
 \section{Examples}
 
