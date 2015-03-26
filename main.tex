@@ -223,7 +223,7 @@ This equation is physically correct only when the maximum eigenvalue of $\hat \g
 To determine it, an LU-decomposition of the matrix $\hat D$ is performed, and a determinant $D(\Omega, q)$ is calculated.
 If $D(\Omega, q) > 0$, then Eq. \ref{eq:lin_alg_inv} is solved and $\Gamma$ is obtained at a constant computational complexity.
 When $D(\Omega, q) \leq 0$, the DF solution is outside of the convergence radius of the ladder approximation.
-Given that the resulting solution is unique, one can extend this convergence radius by doing a low-order iterative evaluation of $\Gamma$ and checking if the invertion of Eq. \ref{eq:dual_ladder} can be obtained on the next DF iteration. 
+Given that the resulting solution is unique, one can extend this convergence radius by doing a low-order iterative evaluation of $\Gamma$ and checking if the inversion of Eq. \ref{eq:dual_ladder} can be obtained on the next DF iteration. 
  
 Once the fully dressed vertex function $\Gamma_{\Omega,\omega,\omega'}$ is obtained, it is used in the Schwinger-Dyson equation to obtain the fermionic self-energy $\tilde \Sigma_{\omega, k}$. 
 The equation reads:
@@ -302,7 +302,7 @@ to evaluate the error. The maximum run-time of this benchmark data is $\approx 4
 \label{fig:benchmark_b}
 \end{figure}
 
-Fig. \ref{fig:benchmark_b} shows the performance of the \texttt{opendf} code with respect to the total number of bosonic frequencies in the vertex $\gamma_{\Omega}$. The computational effort grows linearly in $N_{\Omega}$, while the error decreases quadratically, indicating that this error can be eliminated with large enough $N_{\Omega}$.
+Fig. \ref{fig:benchmark_b} shows the performance of the \texttt{opendf} code upon the change of the total number of bosonic frequencies in the vertex $\gamma_{\Omega}$. The computational effort grows linearly in $N_{\Omega}$, while the error is f the order of few percent and decreases quadratically, indicating that this error can be eliminated with large enough $N_{\Omega}$.
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_ffreqs.pdf}
@@ -310,13 +310,15 @@ Fig. \ref{fig:benchmark_b} shows the performance of the \texttt{opendf} code wit
 \label{fig:benchmark_f}
 \end{figure}
 
-We analyze the performance of the code with respect to the change of the total number of fermionic frequencies on Fig. \ref{fig:benchmark_f}. While the computational scaling grows quadratically, it is seen that the convergence of $g$ is achived very quickly 
+We analyze the performance of the code with respect to the change of the total number of fermionic frequencies on Fig. \ref{fig:benchmark_f}. The computational scaling grows quadratically, however the relative error an order of magnitude smaller, as compared to the case of different $N_{\Omega}$. The  convergence of $g$ is achived very quickly upon an increase of $N_{\omega}$ and there is no scaling at large $N_{\omega}$.
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_kpts.pdf}
 \caption{Volume scaling}
 \label{fig:benchmark_f}
 \end{figure}
+
+The performance of 
 
 \section{Examples}
 
