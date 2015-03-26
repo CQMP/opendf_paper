@@ -129,7 +129,7 @@
 \address[a]{Department of Physics, University of Michigan, Ann Arbor, Michigan 48109, USA}
 
 \begin{abstract}
-We present the open-source algorithm, \textbf{opendf} code -  a multiscale approach, that utilizes recently developed dual fermion method, to solve lattice problems of interacting strongly correlated systems. In particular, present distribution of the code provides an approximate solution for the Hubbard model in various dimensions $D=1,2,3,4$. The method is designed to be the ending step of the self-consistency procedure of dynamical mean field theory (DMFT) and hence utilizes the DMFT input: Green's function and full reducible vertex functions. As an output the code provides an estimate to spatially dependent susceptibilities and Green's functions of the model. The code is distributed as an open-source package. 
+We present the open-source algorithm, \textbf{opendf} code -  a multiscale approach, that utilizes the recently developed dual fermion method, to solve lattice problems of interacting strongly correlated systems. In particular, present distribution of the code provides an approximate solution for the Hubbard model in dimensions $D=1,2,3,4$. The method is designed to follow the final step of the self-consistency procedure of dynamical mean field theory (DMFT) and hence utilizes the DMFT input: Green's function and full reducible vertex functions. As an output the code provides an estimate to spatially dependent susceptibilities and Green's functions of the model. The code is distributed as an open-source package. 
 \end{abstract}
 
 \begin{keyword}
@@ -185,7 +185,7 @@ The correlators of the Anderson impurity model: one particle Green's function $g
 \end{equation}
 are the input to DF calculations. 
 
-Presented version of the code considers spin-symmetric solutions of the lattice $s=1/2$ fermionic problems, and does not describe symmetry-broken phases. We will omit index $\sigma$ from now on, unless it is specifically required. The complete set of input quantities reads
+The presented version of the code considers spin-symmetric solutions of the lattice $s=1/2$ fermionic problems, and does not describe symmetry-broken phases. We will omit index $\sigma$ from now on, unless it is specifically required. The complete set of input quantities reads
 \begin{itemize}
 \item $g_\omega$ - the full Green's function of the DMFT impurity problem (same values for both spin components)
 \item $\Delta_{\omega}$ - hybridization function of the DMFT impurity problem
@@ -265,7 +265,7 @@ The code is distributed as a C++ library, with precompiled executables \texttt{h
 
 The library distribution allows for flexibility with the input data. In order to use provided \texttt{hub\_df\_cubic{\bf D}d} executables the input data should be stored in the \texttt{hdf5} file, under any chosen group name. It should contain the following objects, loadable by \texttt{gftools} routines. 
 \begin{itemize}
-\item \texttt{/gw0} and \texttt{/gw1}. Both should be the same and store $g_\omega$.
+\item \texttt{/gw0} and \texttt{/gw1}. $g_{\omega \uparrow}$ and $g_{\omega \downarrow}$.  Assumed to be identical.
 \item \texttt{/delta0} and \texttt{/delta1}, storing $\Delta_\omega$.
 \item \texttt{/F00} and \texttt{/F01}. $\gamma^{\uparrow\uparrow}$ and $\gamma^{\uparrow\downarrow}$ respectively.
 \item Other parameters, like $\mu$ and hopping unit are provided through the provided command line interface.
