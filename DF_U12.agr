@@ -91,7 +91,7 @@
 @timestamp rot 0
 @timestamp font 0
 @timestamp char size 1.000000
-@timestamp def "Mon Mar 30 12:48:50 2015"
+@timestamp def "Mon Mar 30 13:07:28 2015"
 @with string
 @    string on
 @    string loctype view
@@ -188,7 +188,7 @@
 @g0 fixedpoint format general general
 @g0 fixedpoint prec 6, 6
 @with g0
-@    world 0, -9, 10.704, 7
+@    world 0, -20, 10.704, 20
 @    stack world 0, 0, 0, 0
 @    znorm 1
 @    view 0.150000, 0.150000, 1.050000, 0.850000
@@ -270,7 +270,7 @@
 @    yaxis  label color 1
 @    yaxis  label place normal
 @    yaxis  tick on
-@    yaxis  tick major 5
+@    yaxis  tick major 10
 @    yaxis  tick minor ticks 1
 @    yaxis  tick default 6
 @    yaxis  tick place rounded true
@@ -2291,6 +2291,153 @@
 @    s39 errorbar riser clip length 0.100000
 @    s39 comment "/home/jpfleblanc/DF_U12.dat"
 @    s39 legend  ""
+@    s40 hidden false
+@    s40 type xy
+@    s40 symbol 1
+@    s40 symbol size 0.710000
+@    s40 symbol color 4
+@    s40 symbol pattern 1
+@    s40 symbol fill color 4
+@    s40 symbol fill pattern 4
+@    s40 symbol linewidth 1.5
+@    s40 symbol linestyle 1
+@    s40 symbol char 65
+@    s40 symbol char font 0
+@    s40 symbol skip 0
+@    s40 line type 1
+@    s40 line linestyle 1
+@    s40 line linewidth 1.0
+@    s40 line color 4
+@    s40 line pattern 1
+@    s40 baseline type 0
+@    s40 baseline off
+@    s40 dropline off
+@    s40 fill type 0
+@    s40 fill rule 0
+@    s40 fill color 1
+@    s40 fill pattern 1
+@    s40 avalue off
+@    s40 avalue type 2
+@    s40 avalue char size 1.000000
+@    s40 avalue font 0
+@    s40 avalue color 1
+@    s40 avalue rot 0
+@    s40 avalue format general
+@    s40 avalue prec 3
+@    s40 avalue prepend ""
+@    s40 avalue append ""
+@    s40 avalue offset 0.000000 , 0.000000
+@    s40 errorbar on
+@    s40 errorbar place both
+@    s40 errorbar color 4
+@    s40 errorbar pattern 1
+@    s40 errorbar size 1.000000
+@    s40 errorbar linewidth 1.0
+@    s40 errorbar linestyle 1
+@    s40 errorbar riser linewidth 1.0
+@    s40 errorbar riser linestyle 1
+@    s40 errorbar riser clip off
+@    s40 errorbar riser clip length 0.100000
+@    s40 comment "/home/jpfleblanc/DF_U12_atomic.dat"
+@    s40 legend  ""
+@    s41 hidden false
+@    s41 type xy
+@    s41 symbol 1
+@    s41 symbol size 0.710000
+@    s41 symbol color 4
+@    s41 symbol pattern 1
+@    s41 symbol fill color 4
+@    s41 symbol fill pattern 4
+@    s41 symbol linewidth 1.5
+@    s41 symbol linestyle 1
+@    s41 symbol char 65
+@    s41 symbol char font 0
+@    s41 symbol skip 0
+@    s41 line type 1
+@    s41 line linestyle 1
+@    s41 line linewidth 1.0
+@    s41 line color 4
+@    s41 line pattern 1
+@    s41 baseline type 0
+@    s41 baseline off
+@    s41 dropline off
+@    s41 fill type 0
+@    s41 fill rule 0
+@    s41 fill color 1
+@    s41 fill pattern 1
+@    s41 avalue off
+@    s41 avalue type 2
+@    s41 avalue char size 1.000000
+@    s41 avalue font 0
+@    s41 avalue color 1
+@    s41 avalue rot 0
+@    s41 avalue format general
+@    s41 avalue prec 3
+@    s41 avalue prepend ""
+@    s41 avalue append ""
+@    s41 avalue offset 0.000000 , 0.000000
+@    s41 errorbar on
+@    s41 errorbar place both
+@    s41 errorbar color 4
+@    s41 errorbar pattern 1
+@    s41 errorbar size 1.000000
+@    s41 errorbar linewidth 1.0
+@    s41 errorbar linestyle 1
+@    s41 errorbar riser linewidth 1.0
+@    s41 errorbar riser linestyle 1
+@    s41 errorbar riser clip off
+@    s41 errorbar riser clip length 0.100000
+@    s41 comment "/home/jpfleblanc/DF_U12_atomic.dat"
+@    s41 legend  ""
+@    s42 hidden false
+@    s42 type xy
+@    s42 symbol 1
+@    s42 symbol size 0.710000
+@    s42 symbol color 4
+@    s42 symbol pattern 1
+@    s42 symbol fill color 4
+@    s42 symbol fill pattern 4
+@    s42 symbol linewidth 1.5
+@    s42 symbol linestyle 1
+@    s42 symbol char 65
+@    s42 symbol char font 0
+@    s42 symbol skip 0
+@    s42 line type 1
+@    s42 line linestyle 1
+@    s42 line linewidth 1.0
+@    s42 line color 4
+@    s42 line pattern 1
+@    s42 baseline type 0
+@    s42 baseline off
+@    s42 dropline off
+@    s42 fill type 0
+@    s42 fill rule 0
+@    s42 fill color 1
+@    s42 fill pattern 1
+@    s42 avalue off
+@    s42 avalue type 2
+@    s42 avalue char size 1.000000
+@    s42 avalue font 0
+@    s42 avalue color 1
+@    s42 avalue rot 0
+@    s42 avalue format general
+@    s42 avalue prec 3
+@    s42 avalue prepend ""
+@    s42 avalue append ""
+@    s42 avalue offset 0.000000 , 0.000000
+@    s42 errorbar on
+@    s42 errorbar place both
+@    s42 errorbar color 4
+@    s42 errorbar pattern 1
+@    s42 errorbar size 1.000000
+@    s42 errorbar linewidth 1.0
+@    s42 errorbar linestyle 1
+@    s42 errorbar riser linewidth 1.0
+@    s42 errorbar riser linestyle 1
+@    s42 errorbar riser clip off
+@    s42 errorbar riser clip length 0.100000
+@    s42 comment "/home/jpfleblanc/DF_U12_atomic.dat"
+@    s42 legend  ""
 @target G0.S0
 @type xy
 0 0
@@ -8700,4 +8847,64 @@
 9.6153475 -7.3220091
 10.170708 -8.4993248
 10.703854 -8.7750964
+&
+@target G0.S40
+@type xy
+0 -11.875694
+0.20420352 -11.866932
+0.39269908 -11.834286
+0.5969026 -11.758322
+0.78539816 -11.605802
+0.98960169 -11.32979
+1.1780972 -10.872823
+1.3823008 -10.176167
+1.5707963 -9.1973316
+1.7749998 -7.9335949
+1.9634954 -6.4416577
+2.1676989 -4.8390163
+2.3561945 -3.2801378
+2.560398 -1.9181017
+2.7488936 -0.8730537
+2.9530971 -0.22101522
+3.1258847 -8.9082317e-16
+&
+@target G0.S41
+@type xy
+3.1415927 -8.9082317e-16
+3.3457962 0.22101522
+3.5342917 0.8730537
+3.7384953 1.9181017
+3.9269908 3.2801378
+4.1311943 4.8390163
+4.3196899 6.4416577
+4.5238934 7.9335949
+4.712389 9.1973316
+4.9165925 10.176167
+5.1050881 10.872823
+5.3092916 11.32979
+5.4977871 11.605802
+5.7019907 11.758322
+5.8904862 11.834286
+6.0946897 11.866932
+6.2674773 11.875694
+&
+@target G0.S42
+@type xy
+6.2831853 11.875694
+6.5719727 11.856991
+6.8385457 11.772946
+7.1273331 11.531114
+7.393906 10.951511
+7.6826934 9.7473222
+7.9492664 7.5695005
+8.2380538 4.2190995
+8.5046268 -5.7891114e-15
+8.7934142 -4.2190995
+9.0599871 -7.5695005
+9.3487745 -9.7473222
+9.6153475 -10.951511
+9.9041349 -11.531114
+10.170708 -11.772946
+10.459495 -11.856991
+10.703854 -11.875694
 &
