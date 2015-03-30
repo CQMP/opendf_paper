@@ -166,6 +166,8 @@ Type your keywords here, separated by semicolons ;
 \vspace*{-8pt}
 
 \listoftodos
+\aatodo{}{Insert references if you can.}
+
 \section{Introduction}
 
 Providing solutions to interacting problems which extend beyond analytically tractible mean-field approaches is a long standing avenue of modern physics research.  Great strides in this problem were made in the advent of the numerically tractable procedure of dynamical mean-field theory (DMFT), capable of providing time and frequency dependent information.  A very general theory, DMFT is applicable to any Hamiltonian which can be separated into local and non-local contributions.  DMFT then provides an approximate solution by solving the local correlations exactly.
@@ -335,12 +337,14 @@ The performance of the code with respect to the change of number of k-space samp
 
 \section{Examples}
 
-One example is shown in Fig.~\ref{fig:hub_atomic}.  \aatodo{}{What do we actually want here?  What makes a good story?  Do we need it at all?  }
+\aatodo{}{Atomic limit example please.  }
+
+Next we illustrate an example of output from opendf using input from single particle Green's functions and two-particle vertex functions obtained using a DMFT code built upon the ALPS libraries.[cite alps here I guess]  The results for the real part of the self energy are shown in Fig.~\ref{fig:hub_atomic} for $U/t=8$ and $U/t=12$. The DMFT gives a zero contribution to this part of the self energy due to particle-hole symmetry in this case.  However, using this result as input to opendf produces a strongly momentum dependent self energy.  
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.6\columnwidth]{DF_U12.eps}
-\caption{Momentum Dependence}
+\caption{Dual Fermion result for the momentum dependence of the real part of the self energy at momenta $(k_x, k_y)$ throughout the Brillouin zone, for the 2D Hubbard model at half-filling, at $\beta=2$, and for interaction strengths $U/t=8$ and $12$.}
 \label{fig:hub_atomic}
 \end{figure}
 

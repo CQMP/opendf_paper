@@ -91,7 +91,7 @@
 @timestamp rot 0
 @timestamp font 0
 @timestamp char size 1.000000
-@timestamp def "Mon Mar 30 13:07:28 2015"
+@timestamp def "Mon Mar 30 17:05:39 2015"
 @with string
 @    string on
 @    string loctype view
@@ -135,13 +135,13 @@
 @with string
 @    string on
 @    string loctype view
-@    string 0.1875, 0.789215686275
+@    string 0.21568627451, 0.768382352942
 @    string color 1
 @    string rot 0
 @    string font 0
 @    string just 0
-@    string char size 1.340000
-@    string def "U=8, T=0.5"
+@    string char size 1.750000
+@    string def "\xb\f{}=0.5"
 @r0 off
 @link r0 to g0
 @r0 type above
@@ -188,7 +188,7 @@
 @g0 fixedpoint format general general
 @g0 fixedpoint prec 6, 6
 @with g0
-@    world 0, -20, 10.704, 20
+@    world 0, -9, 10.704, 7
 @    stack world 0, 0, 0, 0
 @    znorm 1
 @    view 0.150000, 0.150000, 1.050000, 0.850000
@@ -219,7 +219,7 @@
 @    xaxis  label color 1
 @    xaxis  label place normal
 @    xaxis  tick on
-@    xaxis  tick major 5
+@    xaxis  tick major 3.1415
 @    xaxis  tick minor ticks 1
 @    xaxis  tick default 6
 @    xaxis  tick place rounded true
@@ -270,7 +270,7 @@
 @    yaxis  label color 1
 @    yaxis  label place normal
 @    yaxis  tick on
-@    yaxis  tick major 10
+@    yaxis  tick major 5
 @    yaxis  tick minor ticks 1
 @    yaxis  tick default 6
 @    yaxis  tick place rounded true
@@ -318,7 +318,7 @@
 @    legend box fill color 0
 @    legend box fill pattern 1
 @    legend font 0
-@    legend char size 1.110000
+@    legend char size 1.340000
 @    legend color 1
 @    legend length 4
 @    legend vgap 1
@@ -870,7 +870,7 @@
 @    s10 errorbar riser clip length 0.100000
 @    s10 comment "/home/jpfleblanc/working_2014/andrey/U8T0.5/analysis/DCA_Coarse_grained_corrected.dat"
 @    s10 legend  ""
-@    s11 hidden false
+@    s11 hidden true
 @    s11 type xy
 @    s11 symbol 0
 @    s11 symbol size 0.610000
@@ -1950,12 +1950,12 @@
 @    s32 legend  ""
 @    s33 hidden false
 @    s33 type xy
-@    s33 symbol 9
-@    s33 symbol size 1.000000
+@    s33 symbol 1
+@    s33 symbol size 0.710000
 @    s33 symbol color 2
 @    s33 symbol pattern 1
 @    s33 symbol fill color 2
-@    s33 symbol fill pattern 0
+@    s33 symbol fill pattern 4
 @    s33 symbol linewidth 2.0
 @    s33 symbol linestyle 1
 @    s33 symbol char 65
@@ -1996,8 +1996,8 @@
 @    s33 errorbar riser clip off
 @    s33 errorbar riser clip length 0.100000
 @    s33 comment "/home/jpfleblanc/Dropbox/HubbardBenchmarks/HubbardBenchmarks/make_data_plots/DF_DCA/centers_DF.dat"
-@    s33 legend  "2D Hubbard - U=8"
-@    s34 hidden false
+@    s33 legend  "2D Hubbard U=8"
+@    s34 hidden true
 @    s34 type xy
 @    s34 symbol 1
 @    s34 symbol size 0.710000
@@ -2046,7 +2046,7 @@
 @    s34 errorbar riser clip length 0.100000
 @    s34 comment "/home/jpfleblanc/Dropbox/open_DF_paper/firstleg_centers.dat"
 @    s34 legend  "2D Atomic Limit - U=8"
-@    s35 hidden false
+@    s35 hidden true
 @    s35 type xy
 @    s35 symbol 1
 @    s35 symbol size 0.710000
@@ -2095,7 +2095,7 @@
 @    s35 errorbar riser clip length 0.100000
 @    s35 comment "/home/jpfleblanc/Dropbox/open_DF_paper/secondleg_centers.dat"
 @    s35 legend  ""
-@    s36 hidden false
+@    s36 hidden true
 @    s36 type xy
 @    s36 symbol 1
 @    s36 symbol size 0.710000
@@ -2146,12 +2146,12 @@
 @    s36 legend  ""
 @    s37 hidden false
 @    s37 type xy
-@    s37 symbol 8
-@    s37 symbol size 1.000000
-@    s37 symbol color 2
+@    s37 symbol 1
+@    s37 symbol size 0.710000
+@    s37 symbol color 4
 @    s37 symbol pattern 1
-@    s37 symbol fill color 2
-@    s37 symbol fill pattern 0
+@    s37 symbol fill color 4
+@    s37 symbol fill pattern 4
 @    s37 symbol linewidth 2.0
 @    s37 symbol linestyle 1
 @    s37 symbol char 65
@@ -2182,7 +2182,7 @@
 @    s37 avalue offset 0.000000 , 0.000000
 @    s37 errorbar on
 @    s37 errorbar place both
-@    s37 errorbar color 2
+@    s37 errorbar color 4
 @    s37 errorbar pattern 1
 @    s37 errorbar size 1.000000
 @    s37 errorbar linewidth 1.0
@@ -2195,12 +2195,12 @@
 @    s37 legend  "2D Hubbard U=12"
 @    s38 hidden false
 @    s38 type xy
-@    s38 symbol 8
-@    s38 symbol size 1.000000
-@    s38 symbol color 2
+@    s38 symbol 1
+@    s38 symbol size 0.710000
+@    s38 symbol color 4
 @    s38 symbol pattern 1
-@    s38 symbol fill color 2
-@    s38 symbol fill pattern 0
+@    s38 symbol fill color 4
+@    s38 symbol fill pattern 4
 @    s38 symbol linewidth 2.0
 @    s38 symbol linestyle 1
 @    s38 symbol char 65
@@ -2231,7 +2231,7 @@
 @    s38 avalue offset 0.000000 , 0.000000
 @    s38 errorbar on
 @    s38 errorbar place both
-@    s38 errorbar color 2
+@    s38 errorbar color 4
 @    s38 errorbar pattern 1
 @    s38 errorbar size 1.000000
 @    s38 errorbar linewidth 1.0
@@ -2244,12 +2244,12 @@
 @    s38 legend  ""
 @    s39 hidden false
 @    s39 type xy
-@    s39 symbol 8
-@    s39 symbol size 1.000000
-@    s39 symbol color 2
+@    s39 symbol 1
+@    s39 symbol size 0.710000
+@    s39 symbol color 4
 @    s39 symbol pattern 1
-@    s39 symbol fill color 2
-@    s39 symbol fill pattern 0
+@    s39 symbol fill color 4
+@    s39 symbol fill pattern 4
 @    s39 symbol linewidth 2.0
 @    s39 symbol linestyle 1
 @    s39 symbol char 65
@@ -2280,7 +2280,7 @@
 @    s39 avalue offset 0.000000 , 0.000000
 @    s39 errorbar on
 @    s39 errorbar place both
-@    s39 errorbar color 2
+@    s39 errorbar color 4
 @    s39 errorbar pattern 1
 @    s39 errorbar size 1.000000
 @    s39 errorbar linewidth 1.0
@@ -2291,7 +2291,7 @@
 @    s39 errorbar riser clip length 0.100000
 @    s39 comment "/home/jpfleblanc/DF_U12.dat"
 @    s39 legend  ""
-@    s40 hidden false
+@    s40 hidden true
 @    s40 type xy
 @    s40 symbol 1
 @    s40 symbol size 0.710000
@@ -2340,7 +2340,7 @@
 @    s40 errorbar riser clip length 0.100000
 @    s40 comment "/home/jpfleblanc/DF_U12_atomic.dat"
 @    s40 legend  ""
-@    s41 hidden false
+@    s41 hidden true
 @    s41 type xy
 @    s41 symbol 1
 @    s41 symbol size 0.710000
@@ -2389,7 +2389,7 @@
 @    s41 errorbar riser clip length 0.100000
 @    s41 comment "/home/jpfleblanc/DF_U12_atomic.dat"
 @    s41 legend  ""
-@    s42 hidden false
+@    s42 hidden true
 @    s42 type xy
 @    s42 symbol 1
 @    s42 symbol size 0.710000
