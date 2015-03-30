@@ -299,7 +299,7 @@ to evaluate the error. The maximum run-time of this benchmark data is $\approx 4
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_bfreqs.pdf}
-\caption{(a) execution time; relative difference $|1 - \tilde G/\tilde G_{Nb\to \infty}|$ of the dual fermion Green's function $\tilde G_{i\omega, k}$ at $i\omega = i\pi / \beta, k = (0,0)$ for the Hubbard model in 2 dimensions at different number of bosonic frequencies. in a linear (b) and logarithmic (c) scales }
+\caption{(a) Execution time; (b) Error $\delta_g$ of the dual fermion Green's function $\tilde G_{i\omega, k}$ at $i\omega = i\pi / \beta, k = (0,0)$ for the Hubbard model in 2 dimensions at different number of bosonic frequencies $N_b$. (c) $\delta_g(N_b)$ in a logarithmic scale. }
 \label{fig:benchmark_b}
 \end{figure}
 
@@ -307,7 +307,7 @@ Fig. \ref{fig:benchmark_b} shows the performance of the \texttt{opendf} code upo
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_ffreqs.pdf}
-\caption{Fermionic scaling}
+\caption{(a) Execution time (log scale in (b); (c) Systematic error $\delta_g$ as a function of the number of used fermionic frequencies $N_{\omega}$. (d) is the zoom of $\delta_g(N_{\omega}$ dependence at large $N_{\omega}$.}
 \label{fig:benchmark_f}
 \end{figure}
 
@@ -319,7 +319,7 @@ We analyze the performance of the code with respect to the change of the total n
 \label{fig:benchmark_f}
 \end{figure}
 
-The performance of 
+The performance of the code with respect to the change of number of points, sampling the Brilloin zone, is plotted on Fig. \ref{fig:benchmark_f}. The computational effort scales linearly with the volume $N_k^d$ of the system and the error is very small and scales as $(N_k^d)^6$, until it reaches the floating point precision.
 
 \section{Examples}
 
