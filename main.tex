@@ -2,6 +2,7 @@
 %% The 'procedia' option causes ecrc to approximate to the Word template
 \documentclass[3p,times,procedia]{elsarticle}
 \flushbottom
+\bibliographystyle{elsarticle-num}
 
 %% The `ecrc' package must be called to make the CRC functionality available
 \usepackage{ecrc}
@@ -72,7 +73,7 @@
 %%   sort&compress   -  like sort, but also compresses numerical citations
 %%   compress - compresses without sorting
 %%
-\biboptions{authoryear}
+%\biboptions{authoryear}
 
 % \biboptions{}
 
@@ -166,16 +167,13 @@ Type your keywords here, separated by semicolons ;
 \vspace*{-8pt}
 
 \listoftodos
-\aatodo{}{Insert references if you can.}
-
 \section{Introduction}
 
-Providing solutions to interacting problems which extend beyond analytically tractible mean-field approaches is a long standing avenue of modern physics research.  Great strides in this problem were made in the advent of the numerically tractable procedure of dynamical mean-field theory (DMFT), capable of providing time and frequency dependent information.  A very general theory, DMFT is applicable to any Hamiltonian which can be separated into local and non-local contributions.  DMFT then provides an approximate solution by solving the local correlations exactly.
+Providing solutions to interacting problems which extend beyond analytically tractible mean-field approaches is a long standing avenue of modern physics research.  Great strides in this problem were made in the advent of the numerically tractable procedure of dynamical mean-field theory (DMFT), capable of providing time and frequency dependent information.  A very general theory, DMFT is applicable to any Hamiltonian which can be separated into local and non-local contributions \cite{KotliarSavrasov:2006}.  DMFT then provides an approximate solution by solving the local correlations exactly \cite{MetznerVollhardt:1989}.
 
-It is now the case for standard strong interacting systems, such as the D-dimensional Hubbard model, that solutions of DMFT are available from existing software simulation packages such as ALPS (Algorithms and Libraries for Physics Simulations), ALPSCore (the core elements of ALPS), TRIQS (Toolbox for Research on Interacting Quantum Systems:  applications of LDA + DMFT).\egtodo{}{Need to discuss if refering to Alpscore makes sense.  Does not have prebuilt DMFT application?}
+It is now the case for standard strong interacting systems, such as the D-dimensional Hubbard model, that solutions of DMFT are available from existing software simulation packages such as ALPS (Algorithms and Libraries for Physics Simulations) \cite{Albuquerque2007} and TRIQS (Toolbox for Research on Interacting Quantum Systems) \cite{TRIQS}.
 
-With this in mind, we present opendf, a code which performs the Dual Fermion self consistency within a ladder approximation to build non-local correlations on top of the solutions provided by existing DMFT routines.  The implementation here is intended to be general, and not model specific.  By taking input of the local Green's function and full vertex function from DMFT, opendf produces an output of momentum and frequency dependent self energies and green's functions, as well as the $Q$ scattering vector dependence of two-particle susceptibilities.  While the treatment here is approximate [only a subset of higher order diagrams are considered] the results of DF are a robust improvement over the DMFT approximation.  We will see that computational complexity of this additional step above DMFT is not substantial and give two example applications using analytic results in the atomic limit as well as input from DMFT for the Hubbard model in two-dimensions.
-
+With this in mind, we present opendf, a code which performs the Dual Fermion self consistency within a ladder approximation to build non-local correlations on top of the solutions provided by existing DMFT routines \cite{Rubtsov2008,HafermannLi:2009}. The implementation here is intended to be general, and not model specific. By taking input of the local Green's function and full vertex function from DMFT, opendf produces an output of momentum and frequency dependent self energies and green's functions, as well as the $Q$ scattering vector dependence of two-particle susceptibilities.  While the treatment here is approximate [only a subset of higher order diagrams are considered] the results of DF are a robust improvement over the DMFT approximation.  We will see that computational complexity of this additional step above DMFT is not substantial and give two example applications using analytic results in the atomic limit as well as input from DMFT for the Hubbard model in two-dimensions.
 
 \section{Methodology}
 \subsection{Prerequisites}
@@ -185,9 +183,9 @@ H = \sum_{k\sigma} (\varepsilon_k - \mu) c^\dagger_{k\sigma} c_{k\sigma} + \sum_
 \end{equation}
 written in mixed momentum, $k$, and realspace, $i$, notation in terms of creation and annihilation operators ($c^\dagger_{k\sigma}$ and $c_{k\sigma}$ respectively).  The index $\sigma$ labels the spin projection, $\varepsilon_k$ is the lattice dispersion relation and $k$ is the vector in the reciprocal space. 
 $H^{\mathrm{int}}$ is the local interaction for each site, $i$, on the lattice. 
-No assumption is made within DF as to the structure of $H^{\mathrm{int}}$.  For example, $H^{\mathrm{int}} = U c^\dagger_\uparrow c_\uparrow c^\dagger_\downarrow c_\downarrow$ would refer to the typical Hubbard model [Hubbard1963]. 
+No assumption is made within DF as to the structure of $H^{\mathrm{int}}$.  For example, $H^{\mathrm{int}} = U c^\dagger_\uparrow c_\uparrow c^\dagger_\downarrow c_\downarrow$ would refer to the typical Hubbard model \cite{Hubbard1963}. 
 
-As a first step, which must be performed outside of this code, an approximate solution of the model is obtained from a dynamical mean field calculation. \egtodo{}{Can we pick a good DMFT reference here. ALPS? Or something else?}
+As a first step, which must be performed outside of this code, an approximate solution of the model is obtained from a dynamical mean field calculation, for example provided by the ALPS code \cite{Albuquerque2007} with an appropriate impurity solver \cite{Hafermann2013a}.
 It provides an estimate for the local Green's function of the lattice problem as a  solution of the Anderson impurity model, embedded into a self-consistently determined hybridization. The imaginary time action of this ``impurity problem''  reads  
 \begin{equation}
 S^{\mathrm{A}} = -\sum_{i\omega,\sigma} (i\omega + \mu - \Delta_{\omega\sigma}) c^*_{\omega\sigma} c_{\omega\sigma} + S^{\mathrm{int}},
@@ -209,7 +207,7 @@ The presented version of the code considers spin-symmetric solutions of the latt
 \end{itemize}
 
 \subsection{Ladder dual fermion self-consistency loop}
-A precise derivation of the DF equations can be found in [], here we outline the equations solved with the code. The evaluation of the DF equations consists of iterative updates of the fully dressed dual fermion Green's function $\tilde G$, until convergence is achieved. It starts with the construction of the bare dual fermion propagator
+A precise derivation of the DF equations can be found in \cite{Hafermann2012, Antipov2014}, here we outline the equations solved with the code. The evaluation of the DF equations consists of iterative updates of the fully dressed dual fermion Green's function $\tilde G$, until convergence is achieved. It starts with the construction of the bare dual fermion propagator
 \begin{equation}
 \tilde G^{(0)}_{\omega,k} = \left[g_{\omega}^{-1} + \Delta_\omega - \varepsilon_k\right]^{-1} - g_{\omega}, \label{eq:gd0}
 \end{equation}
@@ -321,7 +319,7 @@ Fig. \ref{fig:benchmark_b} shows the performance of the \texttt{opendf} code upo
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_ffreqs.pdf}
-\caption{(a) Execution time (log scale in (b); (c) Systematic error $\delta_g$ as a function of the number of used fermionic frequencies $N_{\omega}$. (d) is the zoom of $\delta_g(N_{\omega}$ dependence at large $N_{\omega}$.}
+\caption{(a) Execution time as a function of the number of fermionic frequencies $N_{\omega}$; (b) Systematic error $\delta_g$ . (c) $\delta_g(N_{\omega})$ in a logarithmic scale..}
 \label{fig:benchmark_f}
 \end{figure}
 
@@ -337,14 +335,12 @@ The performance of the code with respect to the change of number of k-space samp
 
 \section{Examples}
 
-\aatodo{}{Atomic limit example please.  }
-
-Next we illustrate an example of output from opendf using input from single particle Green's functions and two-particle vertex functions obtained using a DMFT code built upon the ALPS libraries.[cite alps here I guess]  The results for the real part of the self energy are shown in Fig.~\ref{fig:hub_atomic} for $U/t=8$ and $U/t=12$. The DMFT gives a zero contribution to this part of the self energy due to particle-hole symmetry in this case.  However, using this result as input to opendf produces a strongly momentum dependent self energy.  
+One example is shown in Fig.~\ref{fig:hub_atomic}.  \aatodo{}{What do we actually want here?  What makes a good story?  Do we need it at all?  }
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.6\columnwidth]{DF_U12.eps}
-\caption{Dual Fermion result for the momentum dependence of the real part of the self energy at momenta $(k_x, k_y)$ throughout the Brillouin zone, for the 2D Hubbard model at half-filling, at $\beta=2$, and for interaction strengths $U/t=8$ and $12$.}
+\caption{Momentum Dependence}
 \label{fig:hub_atomic}
 \end{figure}
 
@@ -357,6 +353,8 @@ The code, which is available at \url{https://github.com/aeantipov/opendf} will c
 
 \section*{Acknowledgements}
 Authors are grateful to D. Hirschmeier for fruitful discussions and acknowledge the Simons collaboration on the many-electron problem for financial support and for it's support of the \texttt{ALPSCore} project.
+
+\bibliography{opendf}
 
 \end{document}
 
