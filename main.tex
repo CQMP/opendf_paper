@@ -2,7 +2,7 @@
 %% The 'procedia' option causes ecrc to approximate to the Word template
 \documentclass[3p,times,procedia]{elsarticle}
 \flushbottom
-\bibliographystyle{elsarticle-num}
+\bibliographystyle{elsarticle-harv}
 
 %% The `ecrc' package must be called to make the CRC functionality available
 \usepackage{ecrc}
@@ -193,7 +193,7 @@ The presented version of the code considers spin-symmetric solutions of the latt
 \end{itemize}
 
 \subsection{Ladder dual fermion self-consistency loop}
-A precise derivation of the DF equations can be found in \cite{Hafermann2012, Antipov2014}, here we outline the equations solved within the code. The evaluation of the DF equations consists of iterative updates of the fully dressed dual fermion Green's function $\tilde G$, until convergence is achieved. It starts with the construction of the bare dual fermion propagator
+A precise derivation of the DF equations can be found in \cite{Hafermann2012, Antipov2014}, here we outline the equations solved within the opendf code. The evaluation of the DF equations consists of iterative updates of the fully dressed dual fermion Green's function $\tilde G$, until convergence is achieved. It starts with the construction of the bare dual fermion propagator
 \begin{equation}
 \tilde G^{(0)}_{\omega,k} = \left[g_{\omega}^{-1} + \Delta_\omega - \varepsilon_k\right]^{-1} - g_{\omega}, \label{eq:gd0}
 \end{equation}
@@ -270,7 +270,7 @@ The library distribution allows for flexibility with the input data. In order to
 The output of the code is stored in a generated or existing hdf5 file under the \texttt{/df} section.
 
 \section{Performance analysis}\label{sec:perf}
-To illustrate the performance of the code, we provide an example input generator for the Hubbard model at $U \gg t$ (the case of  ``atomic limit'') and particle-hole symmetry. In this case 
+To illustrate the performance of the code, we provide an example input generator for the Hubbard model at $U \gg t$ (the case of  ``atomic limit'') and particle-hole symmetry. In this case the input quantities of Section \ref{sec :imp} are defined analytically and are given by:
 \begin{align}\label{eq:atomic_limit1}
 g_{\omega} & = \frac{1}{2}\left[\frac{1}{i\omega - U/2} + \frac{1}{i\omega + U/2}\right] \\
 \Delta_{\omega} & = 2Dg_{\omega} \label{eq:atomic_limit2} \\ 
@@ -288,7 +288,7 @@ g_{\omega} & = \frac{1}{2}\left[\frac{1}{i\omega - U/2} + \frac{1}{i\omega + U/2
 where $\Lambda_\omega = 1 + U^2/(4\omega^2)$ and fermionic notation $\omega_1 = \omega, \omega_2 = \omega + \Omega, \omega_3 = \omega' + \Omega, \omega_4 = \omega'$ are used to simplify the notation. The corresponding program is provided with the code. 
 
 The numerical solution of dual fermion equations requires introducing several control parameters. In particular,
-the vertex function $\gamma_{\Omega,\omega,\omega'}$ is sampled on a grid with a cutoff $N_\Omega$ in bosonic and $N_{\omega}$ fermionic frequencies and the Brilloin zone is sampled on a finite grid of size $N_k$, providing the total volume of the system $N=N_k^D$. We analyze the convergence of the code upon tuning $N_{\Omega}$, $N_{\omega}$ and $N_k$ and the computational scaling below. Eqs. \ref{eq:atomic_limit1}, \ref{eq:atomic_limit2}, \ref{eq:atomic_limit3}, \ref{eq:atomic_limit4} are used to provide the input to the code and the system is evaluated in $2$ dimensions, at $U=8$, $\mu = \frac{U}{2}$. We choose the value of $g= \tilde G_{i\pi / \beta, 0, 0}$ to control the convergence. After making several runs, changing control parameter $N_x$, with $x = \{ \Omega, \omega, k \}$, we extrapolate the value to $N_x \to \infty$ and plot the normalized difference 
+the vertex function $\gamma_{\Omega,\omega,\omega'}$ is sampled on a grid with a cutoff $N_\Omega$ in bosonic and $N_{\omega}$ fermionic frequencies and the Brilloin zone is sampled on a finite grid of size $N_k$, giving a total volume of the system of $N_k^D$. We analyze the convergence of the code upon tuning $N_{\Omega}$, $N_{\omega}$ and $N_k$ and the computational scaling below. Eqs. \ref{eq:atomic_limit1}, \ref{eq:atomic_limit2}, \ref{eq:atomic_limit3}, \ref{eq:atomic_limit4} are used to provide the input to the code and the system is evaluated in $2$ dimensions, at $U=8$, $\mu = \frac{U}{2}$. We choose the value of $g= \tilde G_{i\pi / \beta, 0, 0}$ to control the convergence. After making several runs, changing control parameter $N_x$, with $x = \{ \Omega, \omega, k \}$, we extrapolate the value to $N_x \to \infty$ and plot the normalized difference 
 \begin{align}\label{eqn:deltag}
 \delta_{g} = \left|\frac{g_{N_x} - g_{N_x \to \infty}}{g_{N_x \to \infty}}\right|
 \end{align}
@@ -296,7 +296,7 @@ to evaluate the error. The maximum run-time of this benchmark data is $\approx 4
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_bfreqs.pdf}
-\caption{(a) Execution time as a function of the number of bosonic frequencies $N_{\Omega}$; (b) Systematic error $\delta_g$ of the dual fermion Green's function $\tilde G_{i\omega, k}$ at $i\omega = i\pi / \beta, k = (0,0)$ for the Hubbard model in 2 dimensions at different number of bosonic frequencies $N_b$. (c) $\delta_g(N_{\Omega})$ in a logarithmic scale. }
+\caption{(a) Execution time as a function of the number of bosonic frequencies $N_{\Omega}$; (b) Systematic error $\delta_g$ of the dual fermion Green's function $\tilde G_{i\omega, k}$ at $i\omega = i\pi / \beta, k = (0,0)$ for the Hubbard model in 2 dimensions for a varied number of bosonic frequencies $N_b$; (c) $\delta_g(N_{\Omega})$ in a logarithmic scale. }
 \label{fig:benchmark_b}
 \end{figure}
 
@@ -304,7 +304,7 @@ Fig. \ref{fig:benchmark_b} shows the performance of the \texttt{opendf} code upo
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_ffreqs.pdf}
-\caption{(a) Execution time as a function of the number of fermionic frequencies $N_{\omega}$; (b) Systematic error $\delta_g$ . (c) $\delta_g(N_{\omega})$ in a logarithmic scale..}
+\caption{(a) Execution time as a function of the number of fermionic frequencies $N_{\omega}$; (b) Logarithmic scale of (a); (c) Systematic error $\delta_g$; (d) Same as (c) in small $1/N_{\omega}$ limit.}
 \label{fig:benchmark_f}
 \end{figure}
 
@@ -330,18 +330,18 @@ The performance of the code with respect to the change of number of k-space samp
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{susc.pdf}
-\caption{Left: Spin and charge static susceptibility at $\Omega = 0$. Right: Colormap plot of the spin-susceptibility. }
+\caption{Left: $\chi^{\mathrm{ch}}$ and $\chi^{\mathrm{sp}}$, the static spin and charge susceptibilities, at $\Omega = 0$. Right: Colormap plot of $\chi^{\mathrm{sp}}$ as a function of momenta $q_x$ and $q_y$. }
 \label{fig:susc}
 \end{figure}
 
-We provide the practical illustration of the method for the Hubbard model in $D=2$ dimensions. We show the $k$-dependence of the real part of the lattice self-energy $\Sigma_{\omega k}$ at $i\omega = i\pi/\beta$ in Fig.~\ref{fig:sigma} for the case of particle-hole symmetry at $U/t=8$ and compare it with available data from the Dynamical Cluster Approximation \cite{MaierJarrell:2005}. The data from the ALPS DMFT \cite{ALPSDMFT} package with CT-AUX solver \cite{Gull2008b} was used as an input. The DMFT self-energy is momentum-independent and $\mathrm{Re} \Sigma_{\omega k}^{\mathrm{DMFT}} = 0$ and is plotted with a dashed line. Taking into account the spatially dependent corrections by the dual fermions leads to a correct momentum-dependence of the self-energy, matching in this case the DCA result. The detailed comparison between multiple methods will be discussed elsewhere [Benchmark ref]. 
+We provide the practical illustration of the method for the Hubbard model in $D=2$ dimensions. We show the $k$-dependence of the real part of the lattice self-energy $\Sigma(k, i\omega_n)$ at $i\omega_n=i\omega_0 \equiv i\pi/\beta$ in Fig.~\ref{fig:sigma} for the case of particle-hole symmetry at $U/t=8$ and compare it with available data from the Dynamical Cluster Approximation \cite{MaierJarrell:2005}. The data from the ALPS DMFT \cite{ALPS2} package with CT-AUX solver \cite{Gull2008b} was used as an input. The DMFT self-energy is momentum-independent and $\mathrm{Re} \Sigma_{\omega k}^{\mathrm{DMFT}} = 0$ and is plotted with a dashed line. Taking into account the spatially dependent corrections by the dual fermions leads to a correct momentum-dependence of the self-energy, matching in this case the DCA result. The detailed comparison between multiple methods will be discussed elsewhere [Benchmark ref]. 
 
 We illustrate the susceptibility output of the opendf code on Fig. \ref{fig:susc}. Plotted are the static spin- and charge- susceptibilities at $U/t = 8$ for the particle-hole symmetric case. The spin susceptibility, peaked at $(\pi,\pi$) due to antiferromagnetic fluctuations is much larger, than the charge one. 
 
 \section{Conclusion}\label{sec:conclusions}
 In this contribution we have introduced the \texttt{opendf} project which contains command line tools to solve the dual fermion self consistency conditions and computes non-local corrections to the local solutions provided by DMFT.  As such, opendf fills an important void in the existing available software packages, allowing for quick implementations of the DF technique on top of existing DMFT routines.  
 
-The code, which is available at \url{https://github.com/aeantipov/opendf} will continue to undergo development.  Goals include extending the choice of sampled diagrams, incorporating broken-symmetry phases and multiorbital systems, attempt at determining accuracy by checking the contributions of various diagrams. 
+The code, which is available at \url{https://github.com/aeantipov/opendf} will continue to undergo development.  Goals include extending the choice of sampled diagrams, incorporating broken-symmetry phases and multi-orbital systems, and determining accuracy by checking the contributions of different diagrammatic schemes. 
 
 \section*{Acknowledgements}
 Authors are grateful to D. Hirschmeier for fruitful discussions and acknowledge the Simons collaboration on the many-electron problem for financial support and for it's support of the \texttt{ALPSCore} project.
