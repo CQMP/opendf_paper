@@ -171,9 +171,9 @@ Type your keywords here, separated by semicolons ;
 
 Providing solutions to interacting problems which extend beyond analytically tractible mean-field approaches is a long standing avenue of modern physics research.  Great strides in this problem were made in the advent of the numerically tractable procedure of dynamical mean-field theory (DMFT), capable of providing time and frequency dependent information.  A very general theory, DMFT is applicable to any Hamiltonian which can be separated into local and non-local contributions \cite{KotliarSavrasov:2006}.  DMFT then provides an approximate solution by solving the local correlations exactly \cite{MetznerVollhardt:1989}.
 
-It is now the case for standard strong interacting systems, such as the D-dimensional Hubbard model, that solutions of DMFT are available from existing software simulation packages such as ALPS (Algorithms and Libraries for Physics Simulations) \cite{Albuquerque2007} and TRIQS (Toolbox for Research on Interacting Quantum Systems) \cite{TRIQS}.
+It is now the case for standard strong interacting systems, such as the D-dimensional Hubbard model, that solutions of DMFT are available from existing software simulation packages such as ALPS (Algorithms and Libraries for Physics Simulations) \cite{ALPS2} and TRIQS (Toolbox for Research on Interacting Quantum Systems) \cite{TRIQS}.
 
-With this in mind, we present \texttt{opendf}, a code which performs the Dual Fermion self consistency within a ladder approximation to build non-local correlations on top of the solutions provided by existing DMFT routines \cite{Rubtsov2008,HafermannLi:2009}. The implementation here is intended to be general, and not model specific. By taking input of the local Green's function and full vertex function from DMFT, opendf produces an output of momentum and frequency dependent self energies and green's functions, as well as the $Q$ scattering vector dependence of two-particle susceptibilities.  While the treatment here is approximate [only a subset of higher order diagrams are considered] the results of DF are a robust improvement over the DMFT approximation.  We will see that computational complexity of this additional step above DMFT is not substantial and give two example applications using analytic results in the atomic limit as well as input from DMFT for the Hubbard model in two-dimensions.
+With this in mind, we present \texttt{opendf}, a code which performs the Dual Fermion self consistency within a ladder approximation to build non-local correlations on top of the solutions provided by existing DMFT routines \cite{Rubtsov2008,HafermannLi:2009}. The method has previously shown to adequately describe phase transitions in strongly correlated systems and be a general improvement over DMFT \cite{HafermannLi:2009,Antipov2014,Li2014}. The implementation here is intended to be general, and not model specific. By taking input of the local Green's function and full vertex function from DMFT, \texttt{opendf} produces an output of momentum and frequency dependent self energies and Green's functions, as well as the $Q$ scattering vector dependence of two-particle susceptibilities.  While the treatment here is approximate as only a subset of higher order diagrams are considered, the results of DF are a robust improvement over the DMFT approximation.  We will see that computational complexity of this additional step above DMFT is not substantial and give two example applications using analytic results in the atomic limit as well as input from DMFT for the Hubbard model in two-dimensions.
 
 \section{Methodology}
 \subsection{Prerequisites}
@@ -181,16 +181,16 @@ Consider the Hamiltonian, $H$, for a lattice fermionic model in $D$ dimensions,
 \begin{equation}
 H = \sum_{k\sigma} (\varepsilon_k - \mu) c^\dagger_{k\sigma} c_{k\sigma} + \sum_i H^{\mathrm{int}} [c^\dagger_i, c_i],
 \end{equation}
-written in mixed momentum, $k$, and realspace, $i$, notation in terms of creation and annihilation operators ($c^\dagger_{k\sigma}$ and $c_{k\sigma}$ respectively).  The index $\sigma$ labels the spin projection, $\varepsilon_k$ is the lattice dispersion relation and $k$ is the vector in the reciprocal space. 
+written in mixed momentum, $k$, and real space, $i$, notation in terms of creation and annihilation operators ($c^\dagger_{k\sigma}$ and $c_{k\sigma}$ respectively).  The index $\sigma$ labels the spin projection, $\varepsilon_k$ is the lattice dispersion relation and $k$ is the vector in the reciprocal space. 
 $H^{\mathrm{int}}$ is the local interaction for each site, $i$, on the lattice. 
 No assumption is made within DF as to the structure of $H^{\mathrm{int}}$.  For example, $H^{\mathrm{int}} = U c^\dagger_\uparrow c_\uparrow c^\dagger_\downarrow c_\downarrow$ would refer to the typical Hubbard model \cite{Hubbard1963}. 
 
-As a first step, which must be performed outside of this code, an approximate solution of the model is obtained from a dynamical mean field calculation, for example provided by the ALPS code \cite{Albuquerque2007} with an appropriate impurity solver \cite{Hafermann2013a}.
+As a first step, which must be performed outside of this code, an approximate solution of the model is obtained from a dynamical mean field calculation, for example provided by the ALPS code \cite{ALPS2} with an appropriate impurity solver \cite{Hafermann2013a}.
 It provides an estimate for the local Green's function of the lattice problem as a  solution of the Anderson impurity model, embedded into a self-consistently determined hybridization. The imaginary time action of this ``impurity problem''  reads  
 \begin{equation}
 S^{\mathrm{A}} = -\sum_{i\omega,\sigma} (i\omega + \mu - \Delta_{\omega\sigma}) c^*_{\omega\sigma} c_{\omega\sigma} + S^{\mathrm{int}},
 \end{equation}
-where $S^{int} = \int_0^\beta d\tau H^{\mathrm{int}} [c^\dagger_i(\tau), c_i(\tau)] $ is the interaction part of the action and $\Delta_{\omega\sigma}$ is a self-consistently determined hybridization function []. 
+where $S^{int} = \int_0^\beta d\tau H^{\mathrm{int}} [c^\dagger_i(\tau), c_i(\tau)] $ is the interaction part of the action and $\Delta_{\omega\sigma}$ is a self-consistently determined hybridization function. 
 The one particle Green's function $g_{\omega\sigma} = -\langle c_{\omega\sigma} c^\dagger_{\omega\sigma} \rangle$ of the of the Anderson impurity model and the two particle vertex functions (i.e. the connected parts of two-particle Green's functions)  
 \begin{equation}\label{eqn:vertex}
 \gamma_{\Omega\omega\omega'}^{\sigma_1\sigma_2\sigma_3\sigma_4} = \left(\langle c_{\omega,\sigma_1} c^\dagger_{\Omega + \omega,\sigma_2} c_{\omega' + \Omega, \sigma_3} c^\dagger_{\omega', \sigma_4}\rangle - g_{\omega\sigma_1}g_{\omega'\sigma_3}\delta_{\Omega,0}\delta_{\sigma_1,\sigma_2} + g_{\omega\sigma_1} g_{\omega + \Omega, \sigma_2} \delta_{\omega,\omega'}\delta_{\sigma, \sigma_3} \right)
@@ -213,7 +213,7 @@ A precise derivation of the DF equations can be found in \cite{Hafermann2012, An
 \end{equation}
 which represents a $k$-dependent correction to the impurity Green's function. This Green's function is used to construct two-particle bubbles: 
 \begin{equation}\label{eq:dual_bubble}
-\tilde \chi_{\Omega\omega}(q) = -\frac{T}{N_k^d} \sum_k \tilde G_{\omega, k} \tilde G_{\omega + \Omega, k+q}.
+\tilde \chi_{\Omega\omega}(q) = -\frac{T}{N_k^D} \sum_k \tilde G_{\omega, k} \tilde G_{\omega + \Omega, k+q}.
 \end{equation}
 Here the integral over the Brilloin zone is replaced with a discrete summation with $N_k$ points in each direction. The impurity vertex functions are combined into density and magnetic channels (labeled d/m respectively) as: 
 \begin{equation}\label{eq:spin_symm}
@@ -239,7 +239,7 @@ Given that the resulting solution is unique, one can extend this convergence rad
 Once the fully dressed vertex function $\Gamma_{\Omega,\omega,\omega'}$ is obtained, it is used in the Schwinger-Dyson equation to obtain the fermionic self-energy $\tilde \Sigma_{\omega, k}$. 
 The equation reads:
 \begin{equation}\label{eq:sd}
-\tilde \Sigma_{\omega, k} = \frac{T}{2 N_k^d}  \sum_{\Omega, q} \left( 3 \left[\Gamma^m_{\Omega,\omega,\omega}(q) - \frac{1}{2}\Gamma^{(2), m}_{\Omega,\omega,\omega}(q) \right] + \Gamma^d_{\Omega,\omega,\omega}(q) - \frac{1}{2}\Gamma^{(2), d}_{\Omega,\omega,\omega}(q)  \right) \tilde G_{\omega, k + q},
+\tilde \Sigma_{\omega, k} = \frac{T}{2 N_k^D}  \sum_{\Omega, q} \left( 3 \left[\Gamma^m_{\Omega,\omega,\omega}(q) - \frac{1}{2}\Gamma^{(2), m}_{\Omega,\omega,\omega}(q) \right] + \Gamma^d_{\Omega,\omega,\omega}(q) - \frac{1}{2}\Gamma^{(2), d}_{\Omega,\omega,\omega}(q)  \right) \tilde G_{\omega, k + q},
 \end{equation}
 where $\Gamma^{(2)} = \hat \gamma \tilde \chi \hat \gamma $ indicates the second order (first iteration) correction from Eq. \ref{eq:dual_ladder} to avoid diagrammatic overcounting. 
 
@@ -302,7 +302,7 @@ g_{\omega} & = \frac{1}{2}\left[\frac{1}{i\omega - U/2} + \frac{1}{i\omega + U/2
 where $\Lambda_\omega = 1 + U^2/(4\omega^2)$ and fermionic notation $\omega_1 = \omega, \omega_2 = \omega + \Omega, \omega_3 = \omega' + \Omega, \omega_4 = \omega'$ are used to simplify the notation. The corresponding program is provided with the code. 
 
 The numerical solution of dual fermion equations requires introducing several control parameters. In particular,
-the vertex function $\gamma_{\Omega,\omega,\omega'}$ is sampled on a grid with a cutoff $N_\Omega$ in bosonic and $N_{\omega}$ fermionic frequencies and the Brilloin zone is sampled on a finite grid of size $N_k$, providing the total volume of the system $N=N_k^d$. We analyze the convergence of the code upon tuning $N_{\Omega}$, $N_{\omega}$ and $N_k$ and the computational scaling below. Eqs. \ref{eq:atomic_limit1}, \ref{eq:atomic_limit2}, \ref{eq:atomic_limit3}, \ref{eq:atomic_limit4} are used to provide the input to the code and the system is evaluated in $2$ dimensions, at $U=8$, $\mu = \frac{U}{2}$. We choose the value of $g= \tilde G_{i\pi / \beta, 0, 0}$ to control the convergence. After making several runs, changing control parameter $N_x$, with $x = \{ \Omega, \omega, k \}$, we extrapolate the value to $N_x \to \infty$ and plot the normalized difference 
+the vertex function $\gamma_{\Omega,\omega,\omega'}$ is sampled on a grid with a cutoff $N_\Omega$ in bosonic and $N_{\omega}$ fermionic frequencies and the Brilloin zone is sampled on a finite grid of size $N_k$, providing the total volume of the system $N=N_k^D$. We analyze the convergence of the code upon tuning $N_{\Omega}$, $N_{\omega}$ and $N_k$ and the computational scaling below. Eqs. \ref{eq:atomic_limit1}, \ref{eq:atomic_limit2}, \ref{eq:atomic_limit3}, \ref{eq:atomic_limit4} are used to provide the input to the code and the system is evaluated in $2$ dimensions, at $U=8$, $\mu = \frac{U}{2}$. We choose the value of $g= \tilde G_{i\pi / \beta, 0, 0}$ to control the convergence. After making several runs, changing control parameter $N_x$, with $x = \{ \Omega, \omega, k \}$, we extrapolate the value to $N_x \to \infty$ and plot the normalized difference 
 \begin{align}\label{eqn:deltag}
 \delta_{g} = \left|\frac{g_{N_x} - g_{N_x \to \infty}}{g_{N_x \to \infty}}\right|
 \end{align}
@@ -326,11 +326,11 @@ We analyze the performance of the code with respect to the change of the total n
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_kpts.pdf}
-\caption{(a) Execution time as a function of Volume=$N_k^d$. (b) Systematic error $\delta_g$ as a function of the volume. (c) log-scale of (b).}
+\caption{(a) Execution time as a function of Volume=$N_k^D$. (b) Systematic error $\delta_g$ as a function of the volume. (c) log-scale of (b).}
 \label{fig:benchmark_kpts}
 \end{figure}
 
-The performance of the code with respect to the change of number of k-space samples within the Brilloin zone, is plotted on Fig. \ref{fig:benchmark_kpts}. The computational effort (frame (a)) scales linearly with the volume $N_k^d$ of the system and the error is very small and scales as $(N_k^d)^6$, until it reaches the floating point precision.
+The performance of the code with respect to the change of number of k-space samples within the Brilloin zone, is plotted on Fig. \ref{fig:benchmark_kpts}. The computational effort (frame (a)) scales linearly with the volume $N_k^D$ of the system and the error is very small and scales as $(N_k^D)^6$, until it reaches the floating point precision.
 
 \section{Example - Hubbard model, 2 dimensions}
 
@@ -338,16 +338,26 @@ The performance of the code with respect to the change of number of k-space samp
 \centering
 \includegraphics[width=0.6\columnwidth]{DF_U12.eps}
 \caption{Momentum Dependence}
-\label{fig:hub_atomic}
+\label{fig:sigma}
 \end{figure}
 
-We provide the practical illustration of the method for the Hubbard model in $D=2$ dimensions. We show the $k$-dependence of the real part of the lattice self-energy at $i\omega = i\pi/\beta$ in Fig.~\ref{fig:hub_atomic} for the case of particle-hole symmetry at $U/t=8,12$ and compare it with available data from the Dynamical Cluster Approximation \cite{MaierJarrell:2005}. Panel ... shows the comparison of the frequency dependence of the imaginary parts at $k=(0,\pi)$. The data from the ALPS DMFT \cite{Albuquerque2007}\cite{ALPSDMFT} package with CT-AUX solver was used as an input. The DMFT self-energy is $k$-independent and is $\Re \Sigma_{\omega k} = 0$. Taking into account the spatially dependent corrections by the dual fermions leads to a correct k-dependence of the self-energy. The comparison between multiple methods will be discussed elsewhere []. 
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\columnwidth]{susc.pdf}
+\caption{Left: Spin and charge static susceptibility at $\Omega = 0$. Right: Colormap plot of the spin-susceptibility. }
+\label{fig:susc}
+\end{figure}
+
+We provide the practical illustration of the method for the Hubbard model in $D=2$ dimensions. We show the $k$-dependence of the real part of the lattice self-energy $\Sigma_{\omega k}$ at $i\omega = i\pi/\beta$ in Fig.~\ref{fig:sigma} for the case of particle-hole symmetry at $U/t=8$ and compare it with available data from the Dynamical Cluster Approximation \cite{MaierJarrell:2005}. The data from the ALPS DMFT \cite{ALPSDMFT} package with CT-AUX solver \cite{Gull2008b} was used as an input. The DMFT self-energy is momentum-independent and $\mathrm{Re} \Sigma_{\omega k}^{\mathrm{DMFT}} = 0$ and is plotted with a dashed line. Taking into account the spatially dependent corrections by the dual fermions leads to a correct momentum-dependence of the self-energy, matching in this case the DCA result. The detailed comparison between multiple methods will be discussed elsewhere [Benchmark ref]. 
+
+We illustrate the susceptibility output of the opendf code on Fig. \ref{fig:susc}. Plotted are the static spin- and charge- susceptibilities at $U/t = 8$ for the particle-hole symmetric case. The spin susceptibility, peaked at $(\pi,\pi$) due to antiferromagnetic fluctuations is much larger, than the charge one. 
 
 \section{Conclusion}
-In these proceedings we have introduced the opendf project which contains command line tools to solve the dual fermion self consistency conditions and computes non-local corrections to the local solutions provided by DMFT.  As such, opendf fills an important void in the existing available software packages, allowing for quick implementations of the DF technique on top of existing DMFT routines.  
+In this contribution we have introduced the \texttt{opendf} project which contains command line tools to solve the dual fermion self consistency conditions and computes non-local corrections to the local solutions provided by DMFT.  As such, opendf fills an important void in the existing available software packages, allowing for quick implementations of the DF technique on top of existing DMFT routines.  
 
-The code, which is available at \url{https://github.com/aeantipov/opendf} will continue to undergo development.  Goals include incorporating ... \aatodo{}{What are some future directions with the code?} ex. annealing/extending radius of convergence.... different choices of sampled diagrams, attempt at determining accuracy by checking the contributions of higher order diagrams, 
+The code, which is available at \url{https://github.com/aeantipov/opendf} will continue to undergo development.  Goals include extending the choice of sampled diagrams, incorporating broken-symmetry phases and multiorbital systems, attempt at determining accuracy by checking the contributions of various diagrams. 
 
+\egtodo{soon}{ALPSCore citation}
 
 \section*{Acknowledgements}
 Authors are grateful to D. Hirschmeier for fruitful discussions and acknowledge the Simons collaboration on the many-electron problem for financial support and for it's support of the \texttt{ALPSCore} project.
