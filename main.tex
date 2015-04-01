@@ -120,7 +120,7 @@
 %% \dochead can also be used to include a conference title, if directed by the editors
 %% e.g. \dochead{17th International Conference on Dynamical Processes in Excited States of Solids}
 
-\title{opendf - an implementation of the dual fermion method for strongly correlated systems }
+\title{\texttt{opendf} - an implementation of the dual fermion method for strongly correlated systems }
 
 %% use optional labels to link authors explicitly to addresses:
 %% \author[label1,label2]{<author name>}
@@ -173,7 +173,7 @@ Providing solutions to interacting problems which extend beyond analytically tra
 
 It is now the case for standard strong interacting systems, such as the D-dimensional Hubbard model, that solutions of DMFT are available from existing software simulation packages such as ALPS (Algorithms and Libraries for Physics Simulations) \cite{Albuquerque2007} and TRIQS (Toolbox for Research on Interacting Quantum Systems) \cite{TRIQS}.
 
-With this in mind, we present opendf, a code which performs the Dual Fermion self consistency within a ladder approximation to build non-local correlations on top of the solutions provided by existing DMFT routines \cite{Rubtsov2008,HafermannLi:2009}. The implementation here is intended to be general, and not model specific. By taking input of the local Green's function and full vertex function from DMFT, opendf produces an output of momentum and frequency dependent self energies and green's functions, as well as the $Q$ scattering vector dependence of two-particle susceptibilities.  While the treatment here is approximate [only a subset of higher order diagrams are considered] the results of DF are a robust improvement over the DMFT approximation.  We will see that computational complexity of this additional step above DMFT is not substantial and give two example applications using analytic results in the atomic limit as well as input from DMFT for the Hubbard model in two-dimensions.
+With this in mind, we present \texttt{opendf}, a code which performs the Dual Fermion self consistency within a ladder approximation to build non-local correlations on top of the solutions provided by existing DMFT routines \cite{Rubtsov2008,HafermannLi:2009}. The implementation here is intended to be general, and not model specific. By taking input of the local Green's function and full vertex function from DMFT, opendf produces an output of momentum and frequency dependent self energies and green's functions, as well as the $Q$ scattering vector dependence of two-particle susceptibilities.  While the treatment here is approximate [only a subset of higher order diagrams are considered] the results of DF are a robust improvement over the DMFT approximation.  We will see that computational complexity of this additional step above DMFT is not substantial and give two example applications using analytic results in the atomic limit as well as input from DMFT for the Hubbard model in two-dimensions.
 
 \section{Methodology}
 \subsection{Prerequisites}
@@ -207,11 +207,11 @@ The presented version of the code considers spin-symmetric solutions of the latt
 \end{itemize}
 
 \subsection{Ladder dual fermion self-consistency loop}
-A precise derivation of the DF equations can be found in \cite{Hafermann2012, Antipov2014}, here we outline the equations solved with the code. The evaluation of the DF equations consists of iterative updates of the fully dressed dual fermion Green's function $\tilde G$, until convergence is achieved. It starts with the construction of the bare dual fermion propagator
+A precise derivation of the DF equations can be found in \cite{Hafermann2012, Antipov2014}, here we outline the equations solved within the code. The evaluation of the DF equations consists of iterative updates of the fully dressed dual fermion Green's function $\tilde G$, until convergence is achieved. It starts with the construction of the bare dual fermion propagator
 \begin{equation}
 \tilde G^{(0)}_{\omega,k} = \left[g_{\omega}^{-1} + \Delta_\omega - \varepsilon_k\right]^{-1} - g_{\omega}, \label{eq:gd0}
 \end{equation}
-which represents a $k$-dependent correction to the impurity Green's function. This Green's function is used to construct bubbles: 
+which represents a $k$-dependent correction to the impurity Green's function. This Green's function is used to construct two-particle bubbles: 
 \begin{equation}\label{eq:dual_bubble}
 \tilde \chi_{\Omega\omega}(q) = -\frac{T}{N_k^d} \sum_k \tilde G_{\omega, k} \tilde G_{\omega + \Omega, k+q}.
 \end{equation}
@@ -281,7 +281,10 @@ The library distribution allows for flexibility with the input data. In order to
 \item \texttt{/F00} and \texttt{/F01}. $\gamma^{\uparrow\uparrow}$ and $\gamma^{\uparrow\downarrow}$ respectively.
 \item Other parameters, like $\mu$ and hopping unit are provided through the provided command line interface.
 \end{itemize}
-The example input generator for the case of $U \gg t$ (the case of  ``atomic limit'') and particle-hole symmetric regime is provided with the code, in which 
+The output of the code is stored in a generated or existing hdf5 file under the \texttt{/df} section.
+
+\section{Performance analysis}
+To illustrate the performance of the code, we provide an example input generator for the Hubbard model at $U \gg t$ (the case of  ``atomic limit'') and particle-hole symmetry. In this case 
 \begin{align}\label{eq:atomic_limit1}
 g_{\omega} & = \frac{1}{2}\left[\frac{1}{i\omega - U/2} + \frac{1}{i\omega + U/2}\right] \\
 \Delta_{\omega} & = 2Dg_{\omega} \label{eq:atomic_limit2} \\ 
@@ -296,11 +299,7 @@ g_{\omega} & = \frac{1}{2}\left[\frac{1}{i\omega - U/2} + \frac{1}{i\omega + U/2
 (2\delta_{ \omega_1, \omega_4} + \delta_{\omega_1, \omega_2}) 
 \Lambda_{\omega_1} \Lambda_{\omega_3},
 \end{align}
-where $\Lambda_\omega = 1 + U^2/(4\omega^2)$ and fermionic notation $\omega_1 = \omega, \omega_2 = \omega + \Omega, \omega_3 = \omega' + \Omega, \omega_4 = \omega'$ are used to simplify the notation.
-
-The output of the code is stored in a generated or existing hdf5 file under the \texttt{/df} section.
-
-\section{Performance}
+where $\Lambda_\omega = 1 + U^2/(4\omega^2)$ and fermionic notation $\omega_1 = \omega, \omega_2 = \omega + \Omega, \omega_3 = \omega' + \Omega, \omega_4 = \omega'$ are used to simplify the notation. The corresponding program is provided with the code. 
 
 The numerical solution of dual fermion equations requires introducing several control parameters. In particular,
 the vertex function $\gamma_{\Omega,\omega,\omega'}$ is sampled on a grid with a cutoff $N_\Omega$ in bosonic and $N_{\omega}$ fermionic frequencies and the Brilloin zone is sampled on a finite grid of size $N_k$, providing the total volume of the system $N=N_k^d$. We analyze the convergence of the code upon tuning $N_{\Omega}$, $N_{\omega}$ and $N_k$ and the computational scaling below. Eqs. \ref{eq:atomic_limit1}, \ref{eq:atomic_limit2}, \ref{eq:atomic_limit3}, \ref{eq:atomic_limit4} are used to provide the input to the code and the system is evaluated in $2$ dimensions, at $U=8$, $\mu = \frac{U}{2}$. We choose the value of $g= \tilde G_{i\pi / \beta, 0, 0}$ to control the convergence. After making several runs, changing control parameter $N_x$, with $x = \{ \Omega, \omega, k \}$, we extrapolate the value to $N_x \to \infty$ and plot the normalized difference 
@@ -333,9 +332,7 @@ We analyze the performance of the code with respect to the change of the total n
 
 The performance of the code with respect to the change of number of k-space samples within the Brilloin zone, is plotted on Fig. \ref{fig:benchmark_kpts}. The computational effort (frame (a)) scales linearly with the volume $N_k^d$ of the system and the error is very small and scales as $(N_k^d)^6$, until it reaches the floating point precision.
 
-\section{Examples}
-
-One example is shown in Fig.~\ref{fig:hub_atomic}.  \aatodo{}{What do we actually want here?  What makes a good story?  Do we need it at all?  }
+\section{Example - Hubbard model, 2 dimensions}
 
 \begin{figure}[ht]
 \centering
@@ -344,6 +341,7 @@ One example is shown in Fig.~\ref{fig:hub_atomic}.  \aatodo{}{What do we actuall
 \label{fig:hub_atomic}
 \end{figure}
 
+We provide the practical illustration of the method for the Hubbard model in $D=2$ dimensions. We show the $k$-dependence of the real part of the lattice self-energy at $i\omega = i\pi/\beta$ in Fig.~\ref{fig:hub_atomic} for the case of particle-hole symmetry at $U/t=8,12$ and compare it with available data from the Dynamical Cluster Approximation \cite{MaierJarrell:2005}. Panel ... shows the comparison of the frequency dependence of the imaginary parts at $k=(0,\pi)$. The data from the ALPS DMFT \cite{Albuquerque2007}\cite{ALPSDMFT} package with CT-AUX solver was used as an input. The DMFT self-energy is $k$-independent and is $\Re \Sigma_{\omega k} = 0$. Taking into account the spatially dependent corrections by the dual fermions leads to a correct k-dependence of the self-energy. The comparison between multiple methods will be discussed elsewhere []. 
 
 \section{Conclusion}
 In these proceedings we have introduced the opendf project which contains command line tools to solve the dual fermion self consistency conditions and computes non-local corrections to the local solutions provided by DMFT.  As such, opendf fills an important void in the existing available software packages, allowing for quick implementations of the DF technique on top of existing DMFT routines.  
