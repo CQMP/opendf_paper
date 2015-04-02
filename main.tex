@@ -146,16 +146,16 @@ Dual Fermions; Dynamical Mean Field Theory
 
 \section{Introduction}
 
-Understanding the physics of complex correlated electron systems beyond simple approximations or exactly solvable limits is a long-standing goal of condensed matter physics. The dynamical mean field theory (DMFT) \cite{MetznerVollhardt:1989,MH89,Georges92,Jarrell92,Georges1996,KotliarSavrasov:2006} provides a workhorse for numerically simulating the physics of such systems: It establishes that, if correlations and interactions are assumed to be local, the (intractable) extended system can be mapped self-consistently onto an  Anderson impurity model, which can then be solved numerically.
+Understanding the physics of complex correlated electron systems beyond simple approximations or exactly solvable limits is a long-standing goal of condensed matter physics. Towards this goal, the dynamical mean field theory (DMFT) \cite{MetznerVollhardt:1989,MH89,Georges92,Jarrell92,Georges1996,KotliarSavrasov:2006} is a workhorse which provides numerically simulated results for the physics of such systems. It establishes that, if correlations and interactions are assumed to be local, the (intractable) extended system can be mapped self-consistently onto an  Anderson impurity model, which can then be solved numerically.
 
-The dynamical mean field approximation of locality is often precise enough that general materials trends can be reproduced. Nevertheless, cases where non-local correlations lead to behavior not captured by DMFT are known \cite{Lichtenstein2000,MaierJarrell:2005,Held2008,Fuchs2011}, and therefore methods that improve on this approximation are needed. The dual fermion method \cite{Rubtsov2008}, which perturbatively adds corrections to a DMFT starting point reintroduces momentum dependent correlations. If all corrections are included, the method recovers the full momentum dependence of the original problem and becomes numerically exact.
+The dynamical mean field approximation of locality is often precise enough that general material trends can be reproduced. Nevertheless, cases where non-local correlations lead to behavior not captured by DMFT are known \cite{Lichtenstein2000,MaierJarrell:2005,Held2008,Fuchs2011}, and therefore methods that improve on this approximation are needed. The dual fermion method \cite{Rubtsov2008}, which perturbatively adds corrections to a DMFT starting point reintroduces momentum dependent correlations. If all corrections are included, the method recovers the full momentum dependence of the original problem and becomes numerically exact.
 
 In this paper, we present \texttt{opendf}, an implementation of the `ladder series' variant of the Dual Fermion method \cite{HafermannLi:2009}. This variant is approximate, as neither vertices with more than two legs nor series of vertices beyond a single ladder are considered. Nevertheless, it has been shown to consistently improve on DMFT results \cite{Rubtsov2008,Brener2008,HafermannLi:2009,AntipovRubtsov:2011,Li2014,Otsuki2014} and capture critical properties of phase transitions \cite{Antipov2014}.
 
 Dual fermion calculations rely on a dynamical mean field input, which can be provided by one of the publicly available open source software packages that implement the approximation, including ALPS (the Algorithms and Libraries for Physics Simulations) \cite{ALPS2}, TRIQS (the Toolbox for Research on Interacting Quantum Systems) \cite{TRIQS}, and iQIST \cite{iQIST}.
 This initial step requires the self-consistent solution of an interacting quantum many-body system and the calculation of vertex functions \cite{Hafermann2013a,Gull2008b} and is computationally much more expensive than the summation of the dual fermion diagrams. Calculations by \texttt{opendf} therefore can augment any DMFT computation. 
 
-The rest of this paper is organized as follows: Section~\ref{sec:meth} introduces the methodology. Section~\ref{sec:imp} describes  implementation aspects, section~\ref{sec:perf} performance aspects, and section~\ref{sec:ex} shows some examples. Section \ref{sec:conclusions} has conclusions.
+The rest of this paper is organized as follows: Section~\ref{sec:meth} introduces the methodology. Section~\ref{sec:imp} describes  implementation aspects, section~\ref{sec:perf} performance aspects, section~\ref{sec:ex} shows some examples, and section \ref{sec:conclusions} will conclude.
 
 \section{Methodology}\label{sec:meth}
 \subsection{Prerequisites}
@@ -248,7 +248,7 @@ Eqs. \ref{eq:sigma_lat} and \ref{eq:glat} are related by a Dyson equation for $G
 \item The charge and spin susceptibilities
 \begin{align}
 \chi^{\mathrm{ch/sp}} (\Omega, q) & = -T \sum_{\omega k} G_{\omega k} G_{\omega+\Omega k+q} + \sum_{\omega,\omega'} L_{\Omega, \omega}(q) \Gamma^{d/m}_{\Omega,\omega,\omega'}(q) L_{\Omega, \omega'}(q), \\
-L_{\Omega, \omega}(q) & = -T \sum_k \mathfrak{G}_{\omega,k} \mathfrak{G}_{\omega + \Omega,k + q} \\
+L_{\Omega, \omega}(q) & = -T \sum_k \mathfrak{G}_{\omega,k} \mathfrak{G}_{\omega + \Omega,k + q}, \\
 \mathfrak{G}_{\omega,k} & = \tilde G_{\omega k} \frac{\tilde G^{(0)}_{\omega, k} + g_\omega}{\tilde G^{(0)}_{\omega, k}}.
 \end{align}
 \end{itemize}
@@ -313,7 +313,7 @@ We analyze the performance of the code with respect to the change of the total n
 \label{fig:benchmark_kpts}
 \end{figure}
 
-The performance of the code with respect to the change of number of k-space samples within the Brilloin zone $N_k^D$, is plotted on Fig. \ref{fig:benchmark_kpts}. The computational effort (frame (a)) scales linearly with the volume $N_k^D$ of the system and is a quick convergence of the relative error $\delta_g$ (frame (b)).
+The performance of the code with respect to the change of number of k-space samples within the Brilloin zone $N_k^D$, is plotted on Fig. \ref{fig:benchmark_kpts}. The computational effort (frame (a)) scales linearly with the volume $N_k^D$ of the system and shows fast convergence of the relative error $\delta_g$ (frame (b)).
 
 \section{Example II - Hubbard model, 2 dimensions}\label{sec:ex}
 
@@ -331,7 +331,7 @@ The performance of the code with respect to the change of number of k-space samp
 \label{fig:susc}
 \end{figure}
 
-We provide the practical illustration of the method for the Hubbard model in $D=2$ dimensions. We show the $k$-dependence of the real part of the lattice self-energy $\Sigma(k, i\omega_n)$ at $i\omega_n=i\omega_0 \equiv i\pi/\beta$ in Fig.~\ref{fig:sigma} for the case of particle-hole symmetry at $U/t=8$ and compare it with available data from the Dynamical Cluster Approximation \cite{MaierJarrell:2005}. The impurity model was solved using the ALPS DMFT \cite{ALPSDMFT} package with a CT-AUX solver \cite{Gull2008b} was used as an input. The DMFT self-energy is momentum-independent, $\mathrm{Re} \Sigma_{\omega k}^{\mathrm{DMFT}} = 0$, and is plotted with a dashed line. Taking into account the spatially dependent corrections by the dual fermions leads to a correct momentum-dependence of the self-energy, matching in this case the DCA result. A detailed comparison between multiple methods will be discussed elsewhere \cite{LeBlanc2015}. 
+We provide the practical illustration of the method for the Hubbard model in $D=2$ dimensions. We show the $k$-dependence of the real part of the lattice self-energy $\Sigma(k, i\omega_n)$ at $i\omega_n=i\omega_0 \equiv i\pi/\beta$ in Fig.~\ref{fig:sigma} for the case of particle-hole symmetry at $U/t=8$ and compare it with available data from the Dynamical Cluster Approximation \cite{MaierJarrell:2005}. The impurity model, solved using the ALPS DMFT \cite{ALPSDMFT} package with a CT-AUX solver \cite{Gull2008b}, was used as an input. The DMFT self-energy is momentum-independent, $\mathrm{Re} \Sigma_{\omega k}^{\mathrm{DMFT}} = 0$, and is plotted with a dashed line. Taking into account the spatially dependent corrections by the dual fermions leads to a correct momentum-dependence of the self-energy, matching in this case the DCA result. A detailed comparison between multiple methods will be discussed elsewhere \cite{LeBlanc2015}. 
 
 We illustrate the susceptibility in Fig. \ref{fig:susc}. Plotted are the static spin- and charge- susceptibilities at $U/t = 8$ for the particle-hole symmetric case. The spin susceptibility, peaked at $(\pi,\pi$) due to antiferromagnetic fluctuations is much larger than the charge one. 
 
