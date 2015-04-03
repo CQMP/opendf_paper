@@ -150,12 +150,13 @@ Understanding the physics of complex correlated electron systems beyond simple a
 
 The dynamical mean field approximation of locality is often precise enough that general material trends can be reproduced. Nevertheless, cases where non-local correlations lead to behavior not captured by DMFT are known \cite{Lichtenstein2000,MaierJarrell:2005,Held2008,Fuchs2011}, and therefore methods that improve on this approximation are needed. The dual fermion method \cite{Rubtsov2008}, which perturbatively adds corrections to a DMFT starting point reintroduces momentum dependent correlations. If all corrections are included, the method recovers the full momentum dependence of the original problem and becomes numerically exact.
 
-In this paper, we present \texttt{opendf}, an implementation of the `ladder series' variant of the Dual Fermion method \cite{HafermannLi:2009}. This variant is approximate, as neither vertices with more than two legs nor series of vertices beyond a single ladder are considered. Nevertheless, it has been shown to consistently improve on DMFT results \cite{Rubtsov2008,Brener2008,HafermannLi:2009,AntipovRubtsov:2011,Li2014,Otsuki2014} and capture critical properties of phase transitions \cite{Antipov2014}.
+In this paper, we present \texttt{opendf}, an implementation of the `ladder series' variant of the Dual Fermion method \cite{HafermannLi:2009}. This variant is approximate, as neither vertices with more than four legs nor series of vertices beyond a single ladder are considered. Nevertheless, it has been shown to consistently improve on DMFT results \cite{Rubtsov2008,Brener2008,HafermannLi:2009,AntipovRubtsov:2011,Li2014,Otsuki2014} and capture critical properties of phase transitions \cite{Antipov2014}.
 
 Dual fermion calculations rely on a dynamical mean field input, which can be provided by one of the publicly available open source software packages that implement the approximation, including ALPS (the Algorithms and Libraries for Physics Simulations) \cite{ALPS2}, TRIQS (the Toolbox for Research on Interacting Quantum Systems) \cite{TRIQS}, and iQIST \cite{iQIST}.
-This initial step requires the self-consistent solution of an interacting quantum many-body system and the calculation of vertex functions \cite{Hafermann2013a,Gull2008b} and is computationally much more expensive than the summation of the dual fermion diagrams. Calculations by \texttt{opendf} therefore can augment any DMFT computation. 
+This initial step requires the self-consistent solution of an interacting quantum many-body system and the calculation of vertex functions \cite{Hafermann2013a,Gull2008b} and is computationally much more expensive than the summation of the dual fermion diagrams. 
+%Calculations by \texttt{opendf} therefore can augment any DMFT computation. 
 
-The rest of this paper is organized as follows: Section~\ref{sec:meth} introduces the methodology. Section~\ref{sec:imp} describes  implementation aspects, section~\ref{sec:perf} performance aspects, section~\ref{sec:ex} shows some examples, and section \ref{sec:conclusions} will conclude.
+The rest of this paper is organized as follows: Section~\ref{sec:meth} introduces the methodology. Section~\ref{sec:imp} describes  distribution aspects, section~\ref{sec:perf} performance aspects, section~\ref{sec:ex} shows some examples, and section \ref{sec:conclusions} will conclude.
 
 \section{Methodology}\label{sec:meth}
 \subsection{Prerequisites}
@@ -173,22 +174,21 @@ It provides an estimate for the local Green's function of the lattice problem as
 S^{\mathrm{A}} = -\sum_{i\omega,\sigma} (i\omega + \mu - \Delta_{\omega\sigma}) c^\dagger_{\omega\sigma} c_{\omega\sigma} + S^{\mathrm{int}},
 \end{equation}
 where $S^{int} = \int_0^\beta d\tau H^{\mathrm{int}} [c^\dagger_i(\tau), c_i(\tau)] $ is the interaction part of the action and $\Delta_{\omega\sigma}$ is a self-consistently determined hybridization function. 
-The one particle Green's function $g_{\omega\sigma} = -\langle c_{\omega\sigma} c^\dagger_{\omega\sigma} \rangle$ of the of the Anderson impurity model and the two particle vertex functions (i.e. the connected parts of two-particle Green's functions)  
+The DMFT impurity solver computes the one particle Green's function $g_{\omega\sigma} = -\langle c_{\omega\sigma} c^\dagger_{\omega\sigma} \rangle$ of the of the Anderson impurity model and the two particle vertex functions (i.e. the connected parts of two-particle Green's functions)  
 \begin{equation}\label{eqn:vertex}
-\gamma_{\Omega\omega\omega'}^{\sigma_1\sigma_2\sigma_3\sigma_4} = \left(\langle c_{\omega,\sigma_1} c^\dagger_{\Omega + \omega,\sigma_2} c_{\omega' + \Omega, \sigma_3} c^\dagger_{\omega', \sigma_4}\rangle - g_{\omega\sigma_1}g_{\omega'\sigma_3}\delta_{\Omega,0}\delta_{\sigma_1,\sigma_2} + g_{\omega\sigma_1} g_{\omega + \Omega, \sigma_2} \delta_{\omega,\omega'}\delta_{\sigma, \sigma_3} \right)
+\gamma_{\Omega\omega\omega'}^{\sigma_1\sigma_2\sigma_3\sigma_4} = \left(\langle c_{\omega,\sigma_1} c^\dagger_{\Omega + \omega,\sigma_2} c_{\omega' + \Omega, \sigma_3} c^\dagger_{\omega', \sigma_4}\rangle - g_{\omega\sigma_1}g_{\omega'\sigma_3}\delta_{\Omega,0}\delta_{\sigma_1,\sigma_2} + g_{\omega\sigma_1} g_{\omega + \Omega, \sigma_2} \delta_{\omega,\omega'}\delta_{\sigma, \sigma_3} \right).
 \end{equation}
-are input to the dual fermion calculations. 
 
-A DMFT solution provides the following input quantities for the DF simulation:
+The following quantities are then provided as an input to the DF simulation:
 \begin{itemize}
 \item $g_\omega$ - the full Green's function of the DMFT impurity problem (same values for both spin components)
 \item $\Delta_{\omega}$ - hybridization function of the DMFT impurity problem
 \item $\mu$ - chemical potential of the problem
-\item Two independent components of the impurity vertex function, $\gamma_{\Omega\omega\omega'}^{\sigma_1\sigma_2\sigma_3\sigma_4}$, from Eqn~\eqref{eqn:vertex}: $\gamma_{\Omega,\omega,\omega'}^{\uparrow\uparrow\uparrow\uparrow} \equiv \gamma^{\uparrow\uparrow}_{\Omega,\omega,\omega'} $ and $\gamma_{\Omega,\omega,\omega'}^{\uparrow\downarrow\downarrow\uparrow} \equiv  \gamma^{\uparrow\downarrow}_{\Omega,\omega,\omega'} $
+\item Two independent components of the impurity vertex function, $\gamma_{\Omega\omega\omega'}^{\sigma_1\sigma_2\sigma_3\sigma_4}$, from Eqn~\eqref{eqn:vertex}: $\gamma_{\Omega,\omega,\omega'}^{\uparrow\uparrow\uparrow\uparrow} \equiv \gamma^{\uparrow\uparrow}_{\Omega,\omega,\omega'} $ and $\gamma_{\Omega,\omega,\omega'}^{\uparrow\downarrow\downarrow\uparrow} \equiv  \gamma^{\uparrow\downarrow}_{\Omega,\omega,\omega'} $.
 %\item Lattice dispersion $\varepsilon_{k}$ and the dimensionality $D$ are compiled into the specific running executable. The hypercubic lattice dispersion $-2t \sum_{i=1}^d \cos k_i$ at dimensions $D=1,2,3,4$ is provided with the code. Other lattice choices can be achieved by extending the code. 
 \end{itemize}
 
-The present version of the code considers only spin-symmetric solutions of the lattice $s=1/2$ fermionic problems, and does not describe symmetry-broken phases. We will omit the spin index $\sigma$ in single particle quantities in what follows.
+The present version of the code considers only spin-symmetric solutions of fermionic spin $s=1/2$ problems, and does not describe symmetry-broken phases. We will omit the spin index $\sigma$ in single particle quantities in what follows.
 
 
 \subsection{Ladder dual fermion self-consistency loop}
@@ -233,7 +233,7 @@ The resulting dual self-energy is used to obtain the dual Green's function from 
 The procedure is repeated until convergence of $\tilde G$ is achieved. 
 
 \subsection{Resulting observables}
-Once the fully converged dual Green's function $\tilde G$, self-energy $\tilde \Sigma$, vertices $\Gamma^{d/m}$ are obtained, they can be used in determining the lattice correlators. Specifically, 
+The fully converged dual Green's function $\tilde G$, self-energy $\tilde \Sigma$, vertices $\Gamma^{d/m}$ determine the lattice correlators. Specifically, 
 \begin{itemize}
 \item the lattice self-energy: 
 \begin{equation}\label{eq:sigma_lat}
@@ -254,7 +254,7 @@ L_{\Omega, \omega}(q) & = -T \sum_k \mathfrak{G}_{\omega,k} \mathfrak{G}_{\omega
 \end{itemize}
 
 \section{Distribution}\label{sec:imp}
-The dual fermion code is distributed as a C++ library with compiled executables \texttt{hub\_df\_cubic{\bf D}d}, where \texttt{\bf D} labels the number of dimensions ($D=1,2,3,4$). We use the opensource \texttt{gftools} library \cite{gftools} for algebraic operations with single- and multi-particle Green's functions and its interface to the \texttt{ALPSCore} libraries \cite{ALPSCore} for loading/saving \texttt{hdf5} objects. The code is available on \url{https://github.com/aeantipov/opendf}.
+The dual fermion code is distributed as a C++ library with compiled executables \texttt{hub\_df\_cubic{\bf D}d}, where \texttt{\bf D} labels the number of dimensions ($D=1,2,3,4$). We use the opensource \texttt{gftools} library \cite{gftools} for algebraic operations with single- and multi-particle Green's functions and its interface to the \texttt{ALPSCore} libraries \cite{ALPSCore} for loading/saving \texttt{hdf5} objects. The code and the documentation are available on \url{https://github.com/aeantipov/opendf}.
 
 The library distribution allows for flexibility with the input data. In order to use the \texttt{hub\_df\_cubic{\bf D}d} executables provided, the input data should be stored in \texttt{hdf5} file. It should contain the following objects, loadable by \texttt{gftools} routines. 
 \begin{itemize}
@@ -293,7 +293,7 @@ to evaluate the error. For the most expensive point shown here, the run-time of 
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_bfreqs.pdf}
-\caption{(a) Execution time as a function of the number of bosonic frequencies $N_{\Omega}$; (b) Systematic error $\delta_g$ of the dual fermion Green's function $\tilde G_{i\omega, k}$ at $i\omega = i\pi / \beta, k = (0,0)$ for the Hubbard model in 2 dimensions for a varied number of bosonic frequencies $N_b$; (c) $\delta_g(N_{\Omega})$ on a logarithmic scale. }
+\caption{(a) Execution time of the dual fermion calculation for the Hubbard model in $2$ dimensions with ``atomic limit'' input at $U=20$, $\beta = 1$ as a function of the number of bosonic frequencies $N_{\Omega}$ at $N_{\omega} = 48,~N_k = 16$; (b) Systematic error $\delta_g$ of the dual fermion Green's function $\tilde G_{i\omega, k}$ at $i\omega = i\pi / \beta, k = (0,0)$ for a varied number of bosonic frequencies $N_\Omega$ plotted in a logarithmic scale. }
 \label{fig:benchmark_b}
 \end{figure}
 
@@ -301,15 +301,15 @@ Fig. \ref{fig:benchmark_b} shows the performance of the \texttt{opendf} code upo
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_ffreqs.pdf}
-\caption{(a) Execution time as a function of the number of fermionic frequencies $N_{\omega}$; (b) (b) Error $\delta_g$ as a function of $1/N_{\omega}$.}
+\caption{(a) Execution time of the dual fermion calculation for the Hubbard model in $2$ dimensions with ``atomic limit'' input at $U=20$, $\beta = 1$ as a function of the number of fermionic frequencies $N_{\omega}$ at $N_{\Omega} = 3$, $N_k = 8$; (b) Error $\delta_g$ of $G_{i\omega, k}$ at $i\omega = i\pi / \beta, k = (0,0)$ as a function of $1/N_{\omega}$ at the same parameters.}
 \label{fig:benchmark_f}
 \end{figure}
 
-We analyze the performance of the code with respect to the change of the total number of fermionic frequencies $N_{\omega}$  in Fig. \ref{fig:benchmark_f}.  In this benchmark we fix the number of bosonic frequencies, $N_{\Omega}=3$, and perform the calculation on a $8\times8$ k-space grid. The computational scaling seen in Fig.~\ref{fig:benchmark_f}(a) grows almost quadratically, while the relative error shown in Fig.~\ref{fig:benchmark_f}(b) is an order of magnitude smaller, as compared to the variation in $N_{\Omega}$ shown in Fig.\ref{fig:benchmark_b}(b) and is reduces quadratically with an increase of $N_{\omega}$.
+We analyze the performance of the code with respect to the change of the total number of fermionic frequencies $N_{\omega}$  in Fig. \ref{fig:benchmark_f}.  In this benchmark we fix the number of bosonic frequencies, $N_{\Omega}=3$, and perform the calculation on a $8\times8$ k-space grid. The computational expense seen in Fig.~\ref{fig:benchmark_f}(a) grows almost quadratically, while the relative error shown in Fig.~\ref{fig:benchmark_f}(b) is an order of magnitude smaller, as compared to the variation in $N_{\Omega}$ shown in Fig.\ref{fig:benchmark_b}(b) and reduces as a power-law with an increase of $N_{\omega}$.
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_kpts.pdf}
-\caption{(a) Execution time as a function of Volume=$N_k^D$. (b) Systematic error $\delta_g$ as a function of the volume.}
+\caption{(a) Execution time of the dual fermion calculation for the Hubbard model in $2$ dimensions with ``atomic limit'' input at $U=20$, $\beta = 1$ as a function volume $N_k^D$ at $N_{\Omega} = 3$, $N_{\omega} = 48$. (b) Systematic error $\delta_g$ of $G_{i\omega, k}$ at $i\omega = i\pi / \beta, k = (0,0)$ as a function of the volume at the same parameters.}
 \label{fig:benchmark_kpts}
 \end{figure}
 
@@ -320,14 +320,14 @@ The performance of the code with respect to the change of number of k-space samp
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.6\columnwidth]{DF_U12.eps}
-\caption{Momentum Dependence of the lattice self-energy at $U/t = 8$ along the $(k_x,k_y) = (0,0)\to(\pi,0)\to(\pi,\pi)\to(0,0)$ path.}
+\caption{Momentum dependence of the real part of the lower Matsubara frequency of the lattice self-energy of the particle-hole symmetric Hubbard model in $2$ dimensions, as obtained by the \texttt{opendf} calculation at $U/t = 8$, $\beta = 0.5$ along the $(k_x,k_y) = (0,0)\to(\pi,0)\to(\pi,\pi)\to(0,0)$ path (red points). Shown also is the DMFT value (as a dashed line) and the comparison data from the $72$-site Dynamical Cluster Approximation calculation (solid blue line).}
 \label{fig:sigma}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\columnwidth]{susc.pdf}
-\caption{$\chi^{\mathrm{ch}}$ (left panel) and $\chi^{\mathrm{sp}}$ (right), the static spin and charge susceptibilities, at $\Omega = 0$ as a function of momenta $q_x$ and $q_y$. }
+\caption{$\chi^{\mathrm{ch}}$ (left panel) and $\chi^{\mathrm{sp}}$ (right), the static spin and charge susceptibilities, at $\Omega = 0$ as a function of momenta $q_x$ and $q_y$ as obtained by the \texttt{opendf} calculation for $\beta = 0.5$, $U/t = 8$. }
 \label{fig:susc}
 \end{figure}
 
@@ -336,7 +336,7 @@ We provide the practical illustration of the method for the Hubbard model in $D=
 We illustrate the susceptibility in Fig. \ref{fig:susc}. Plotted are the static spin- and charge- susceptibilities at $U/t = 8$ for the particle-hole symmetric case. The spin susceptibility, peaked at $(\pi,\pi$) due to antiferromagnetic fluctuations is much larger than the charge one. 
 
 \section{Conclusion}\label{sec:conclusions}
-In this paper we have introduced an open source implementation of the dual fermion method, the \texttt{opendf} project. It solves the dual fermion self consistency equations and computes non-local corrections to the local solutions provided by DMFT.  \texttt{opendf} can be used as a complementary tool to standard DMFT computations. 
+In this paper we have introduced an open source implementation of the dual fermion method, the \texttt{opendf} project. It solves the dual fermion self consistency equations and computes non-local corrections to the local solutions provided by DMFT.  \texttt{opendf} can be used to augment DMFT computations with two-particle quantities and add momentum dependence to DMFT observables. 
 
 Future development of the code is anticipated. Future releases will include extensions to additional diagrams, broken-symmetry phases and multi-orbital systems. 
 
