@@ -284,12 +284,12 @@ g_{\omega} & = \frac{1}{2}\left[\frac{1}{i\omega - U/2} + \frac{1}{i\omega + U/2
 where $\Lambda_\omega = 1 + U^2/(4\omega^2)$ and  $\omega_1 = \omega, \omega_2 = \omega + \Omega, \omega_3 = \omega' + \Omega, \omega_4 = \omega'$ is used to simplify the notation. The corresponding program is provided with the code. 
 
 The numerical solution of dual fermion equations requires introducing several control parameters. In particular,
-the vertex function $\gamma_{\Omega,\omega,\omega'}$ is sampled on a grid with a cutoff $N_\Omega$ in bosonic and $N_{\omega}$ fermionic frequencies and the Brilloin zone is sampled on a finite grid of size $N_k$, giving a total volume of the system of $N_k^D$. We analyze the convergence of the code upon tuning $N_{\Omega}$, $N_{\omega}$ and $N_k$ and the computational scaling below. Eqs. \ref{eq:atomic_limit1}, \ref{eq:atomic_limit2}, \ref{eq:atomic_limit3}, \ref{eq:atomic_limit4} are used to provide the input to the code and the system is evaluated in $2$ dimensions, at $U=20$, $\mu = \frac{U}{2}$, $\beta = 1$. We choose the value of $g= \tilde G_{i\pi / \beta, 0, 0}$ to control the convergence. We then plot the normalized difference 
+the vertex function $\gamma_{\Omega,\omega,\omega'}$ is sampled on a grid with a cutoff $N_\Omega$ in bosonic and $N_{\omega}$ fermionic frequencies and the Brilloin zone is sampled on a finite grid of size $N_k$, giving a total volume of the system of $N_k^D$. We analyze the convergence of the code upon tuning $N_{\Omega}$, $N_{\omega}$ and $N_k$ and the computational effort below. Eqs. \ref{eq:atomic_limit1}, \ref{eq:atomic_limit2}, \ref{eq:atomic_limit3}, \ref{eq:atomic_limit4} are used to provide the input to the code and the system is evaluated in $2$ dimensions, at $U=20$, $\mu = \frac{U}{2}$, $\beta = 1$. We choose the value of $g= \tilde G_{i\pi / \beta, 0, 0}$ to control the convergence. We then plot the normalized difference 
 \begin{align}\label{eqn:deltag}
 \delta_{g} = \left|\frac{g_{N_x} - g_{N_x \to \infty}}{g_{N_x \to \infty}}\right|
 \end{align}
  as a function of control parameter $N_x$, with $x = \{ \Omega, \omega, k \}$, and extrapolate  $N_x \to \infty$ 
-to evaluate the error. For the most expensive point shown here, the run-time of the simulation was $\approx 4$ min on a laptop.
+to evaluate the error. For the most expensive point shown here, the run-time of the simulation was $\approx 2$ min on a laptop.
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_bfreqs.pdf}
@@ -297,7 +297,7 @@ to evaluate the error. For the most expensive point shown here, the run-time of 
 \label{fig:benchmark_b}
 \end{figure}
 
-Fig. \ref{fig:benchmark_b} shows the performance of the \texttt{opendf} code upon the change of the total number of bosonic frequencies $N_{\Omega}$ in the vertex $\gamma_{\Omega}$ for a fixed number of fermionic frequencies $N_{\omega}=48$ for a $16 \times 16$ k-space grid. The computational effort, indicated by the time to convergence in Fig.~\ref{fig:benchmark_b}(a), grows linearly in $N_{\Omega}$. The error $\delta_g$, as defined in Eqn.~\ref{eqn:deltag} and shown in frame (b), is of the order of a few percent and decreases with a power law.
+Fig. \ref{fig:benchmark_b} shows the performance of the \texttt{opendf} code upon the change of the total number of bosonic frequencies $N_{\Omega}$ in the vertex $\gamma_{\Omega}$ for a fixed number of fermionic frequencies $N_{\omega}=48$ for a $16 \times 16$ k-space grid. The computational effort, indicated by the time to convergence in Fig.~\ref{fig:benchmark_b}(a), grows linearly in $N_{\Omega}$. The error $\delta_g$, as defined in Eqn.~\ref{eqn:deltag} and shown in frame (b), is of the order of a percent and decreases with a power law.
 
 \begin{figure}[ht]
 \includegraphics[width=1.0\columnwidth]{time_ffreqs.pdf}
@@ -338,7 +338,7 @@ We illustrate the susceptibility in Fig. \ref{fig:susc}. Plotted are the static 
 \section{Conclusion}\label{sec:conclusions}
 In this paper we have introduced an open source implementation of the dual fermion method, the \texttt{opendf} project. It solves the dual fermion self consistency equations and computes non-local corrections to the local solutions provided by DMFT.  \texttt{opendf} can be used to augment DMFT computations with two-particle quantities and add momentum dependence to DMFT observables. 
 
-Future development of the code is anticipated. Future releases will include extensions to additional diagrams, broken-symmetry phases and multi-orbital systems. 
+Future development of the code is anticipated. Further releases will include extensions to additional diagrams, broken-symmetry phases and multi-orbital systems. 
 
 \section*{Acknowledgements}
 We are grateful to D. Hirschmeier for fruitful discussions and acknowledge the Simons collaboration on the many-electron problem for financial support and for its support of the \texttt{ALPSCore} project.
