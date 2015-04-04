@@ -254,16 +254,7 @@ L_{\Omega, \omega}(q) & = -T \sum_k \mathfrak{G}_{\omega,k} \mathfrak{G}_{\omega
 \end{itemize}
 
 \section{Distribution}\label{sec:imp}
-The dual fermion code is distributed as a C++ library with compiled executables \texttt{hub\_df\_cubic{\bf D}d}, where \texttt{\bf D} labels the number of dimensions ($D=1,2,3,4$). We use the opensource \texttt{gftools} library \cite{gftools} for algebraic operations with single- and multi-particle Green's functions and its interface to the \texttt{ALPSCore} libraries \cite{ALPSCore} for loading/saving \texttt{hdf5} objects. The code and the documentation are available on \url{https://github.com/aeantipov/opendf}.
-
-The library distribution allows for flexibility with the input data. In order to use the \texttt{hub\_df\_cubic{\bf D}d} executables provided, the input data should be stored in \texttt{hdf5} file. It should contain the following objects, loadable by \texttt{gftools} routines. 
-\begin{itemize}
-\item \texttt{/gw0} and \texttt{/gw1}. $g_{\omega \uparrow}$ and $g_{\omega \downarrow}$.  Assumed to be identical.
-\item \texttt{/delta0} and \texttt{/delta1}, storing $\Delta_\omega$.
-\item \texttt{/F00} and \texttt{/F01}. $\gamma^{\uparrow\uparrow}$ and $\gamma^{\uparrow\downarrow}$ respectively.
-\end{itemize}
-Other parameters are provided through the command line interface.
-The output of the code is stored in an hdf5 file under the \texttt{/df} section.
+The dual fermion code is distributed as a C++ library with compiled executables \texttt{hub\_df\_cubic{\bf D}d}, where \texttt{\bf D} labels the number of dimensions ($D=1,2,3,4$). We use the opensource \texttt{gftools} library \cite{gftools} for algebraic operations with single- and multi-particle Green's functions and its interface to the \texttt{ALPSCore} libraries \cite{ALPSCore} for loading/saving \texttt{hdf5} objects. The code and the documentation are available as Ref.~\cite{OpenDFZenodo}.
 
 \section{Example I and performance analysis}\label{sec:perf}
 As a first example and illustration of the performance of the code, we provide an example input generator for the particle-hole symmetric Hubbard model at $U \gg t$ (the  ``atomic limit'') . In this case the input quantities are given analytically by:
