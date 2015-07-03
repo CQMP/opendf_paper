@@ -27,3 +27,11 @@
 main.pdf
 mainNotes.bib
 main.spl
+*.make
+main.d
+main.fls
+*eps-converted-to.pdf
+main-mpgraph.mp
+main.tdo
+main.top
+main.tui
